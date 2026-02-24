@@ -8,43 +8,46 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <div class="flex">
-        <!-- Sidebar Filters -->
-        <div class="w-1/4 pr-8">
-            <h3 class="font-bold mb-4">Categorías</h3>
-            <ul class="space-y-2">
-                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <li>
-                        <a href="<?php echo e(route('products.index', ['category' => $category->slug])); ?>" class="text-gray-600 hover:text-indigo-600 <?php echo e(request('category') == $category->slug ? 'font-bold text-indigo-600' : ''); ?>">
-                            <?php echo e($category->name); ?>
-
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Filtro de categorías -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Categorías</h2>
+                <div class="flex flex-wrap gap-4">
+                    <a href="<?php echo e(route('products.index')); ?>" class="px-4 py-2 rounded-full <?php echo e(!request('category') ? 'bg-neon-blue text-gamer-dark' : 'bg-gamer-card text-gray-400 hover:text-white'); ?> transition">
+                        Todos
+                    </a>
+                    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $slug => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <a href="<?php echo e(route('products.category', $slug)); ?>" class="px-4 py-2 rounded-full <?php echo e(request('category') == $slug ? 'bg-neon-blue text-gamer-dark' : 'bg-gamer-card text-gray-400 hover:text-white'); ?> transition">
+                            <?php echo e($category['name']); ?> (<?php echo e($category['count']); ?>)
                         </a>
-                    </li>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </ul>
-        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
 
-        <!-- Product Grid -->
-        <div class="w-3/4">
-            <h2 class="text-2xl font-bold mb-6">Catálogo</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="bg-white rounded-lg shadow overflow-hidden">
-                        <img src="<?php echo e($product->image ?? 'https://via.placeholder.com/300'); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-48 object-cover">
+            <!-- Lista de productos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $slug => $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php $product = (object) $product; ?>
+                    <div class="group bg-gamer-card rounded-2xl overflow-hidden border border-gray-800 hover:border-neon-blue/50 transition">
+                        <img src="<?php echo e($product->image); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-48 object-cover">
                         <div class="p-4">
-                            <h3 class="font-bold text-lg mb-2"><?php echo e($product->name); ?></h3>
-                            <p class="text-gray-500 text-sm mb-2"><?php echo e($product->category->name); ?></p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-bold"><?php echo e($product->price); ?>€</span>
-                                <a href="<?php echo e(route('products.show', $product->slug)); ?>" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Ver</a>
+                            <span class="text-xs text-neon-blue uppercase"><?php echo e($product->category); ?></span>
+                            <h3 class="text-white font-bold text-lg mt-1"><?php echo e($product->name); ?></h3>
+                            <p class="text-gray-400 text-sm mt-2 line-clamp-2"><?php echo e($product->description); ?></p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-2xl font-bold text-neon-blue"><?php echo e(number_format($product->price, 2)); ?>€</span>
+                                <a href="<?php echo e(route('products.show', $product->slug)); ?>" class="px-4 py-2 bg-neon-blue/10 text-neon-blue rounded-lg hover:bg-neon-blue hover:text-gamer-dark transition">
+                                    Ver
+                                </a>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </div>
-            <div class="mt-8">
-                <?php echo e($products->links()); ?>
-
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-gray-400">No hay productos disponibles</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

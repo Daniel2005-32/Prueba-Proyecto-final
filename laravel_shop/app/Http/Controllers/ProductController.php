@@ -2,40 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
+use App\Data\ProductData;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
-
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        $category = $request->get('category');
+        
+        if ($category) {
+            $productsArrays = ProductData::getByCategory($category);
+        } else {
+            $productsArrays = ProductData::getAll();
         }
-
-        if ($request->has('category')) {
-            $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->category);
-            });
-        }
-
-        $products = $query->paginate(12);
-        $categories = Category::all();
-
+        
+        // Convertir arrays a objetos
+        $products = collect($productsArrays)->map(function($item) {
+            return (object) $item;
+        });
+        
+        $categories = ProductData::getCategories();
+        
         return view('products.index', compact('products', 'categories'));
     }
 
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)->firstOrFail();
-        $related = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->take(4)
-            ->get();
-            
-        return view('products.show', compact('product', 'related'));
+        $productArray = ProductData::find($slug);
+        
+        if (!$productArray) {
+            abort(404, 'Producto no encontrado');
+        }
+        
+        // Convertir array a objeto
+        $product = (object) $productArray;
+        
+        return view('products.show', compact('product'));
+    }
+
+    public function byCategory($categorySlug)
+    {
+        $productsArrays = ProductData::getByCategory($categorySlug);
+        
+        // Convertir arrays a objetos
+        $products = collect($productsArrays)->map(function($item) {
+            return (object) $item;
+        });
+        
+        $categories = ProductData::getCategories();
+        $currentCategory = $categories[$categorySlug] ?? ['name' => ucfirst($categorySlug)];
+        
+        return view('products.category', compact('products', 'categories', 'currentCategory', 'categorySlug'));
     }
 }

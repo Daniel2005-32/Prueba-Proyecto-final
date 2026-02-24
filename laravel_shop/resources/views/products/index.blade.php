@@ -1,39 +1,44 @@
 <x-store-layout>
-    <div class="flex">
-        <!-- Sidebar Filters -->
-        <div class="w-1/4 pr-8">
-            <h3 class="font-bold mb-4">Categorías</h3>
-            <ul class="space-y-2">
-                @foreach($categories as $category)
-                    <li>
-                        <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="text-gray-600 hover:text-indigo-600 {{ request('category') == $category->slug ? 'font-bold text-indigo-600' : '' }}">
-                            {{ $category->name }}
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Filtro de categorías -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-4">Categorías</h2>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ route('products.index') }}" class="px-4 py-2 rounded-full {{ !request('category') ? 'bg-neon-blue text-gamer-dark' : 'bg-gamer-card text-gray-400 hover:text-white' }} transition">
+                        Todos
+                    </a>
+                    @foreach($categories as $slug => $category)
+                        <a href="{{ route('products.category', $slug) }}" class="px-4 py-2 rounded-full {{ request('category') == $slug ? 'bg-neon-blue text-gamer-dark' : 'bg-gamer-card text-gray-400 hover:text-white' }} transition">
+                            {{ $category['name'] }} ({{ $category['count'] }})
                         </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+                    @endforeach
+                </div>
+            </div>
 
-        <!-- Product Grid -->
-        <div class="w-3/4">
-            <h2 class="text-2xl font-bold mb-6">Catálogo</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach($products as $product)
-                    <div class="bg-white rounded-lg shadow overflow-hidden">
-                        <img src="{{ $product->image ?? 'https://via.placeholder.com/300' }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
+            <!-- Lista de productos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                @forelse($products as $slug => $product)
+                    @php $product = (object) $product; @endphp
+                    <div class="group bg-gamer-card rounded-2xl overflow-hidden border border-gray-800 hover:border-neon-blue/50 transition">
+                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
                         <div class="p-4">
-                            <h3 class="font-bold text-lg mb-2">{{ $product->name }}</h3>
-                            <p class="text-gray-500 text-sm mb-2">{{ $product->category->name }}</p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-bold">{{ $product->price }}€</span>
-                                <a href="{{ route('products.show', $product->slug) }}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Ver</a>
+                            <span class="text-xs text-neon-blue uppercase">{{ $product->category }}</span>
+                            <h3 class="text-white font-bold text-lg mt-1">{{ $product->name }}</h3>
+                            <p class="text-gray-400 text-sm mt-2 line-clamp-2">{{ $product->description }}</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-2xl font-bold text-neon-blue">{{ number_format($product->price, 2) }}€</span>
+                                <a href="{{ route('products.show', $product->slug) }}" class="px-4 py-2 bg-neon-blue/10 text-neon-blue rounded-lg hover:bg-neon-blue hover:text-gamer-dark transition">
+                                    Ver
+                                </a>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-            <div class="mt-8">
-                {{ $products->links() }}
+                @empty
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-gray-400">No hay productos disponibles</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

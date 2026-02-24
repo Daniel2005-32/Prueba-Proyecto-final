@@ -105,5 +105,4 @@
             @endforeach
         </div>
     </div>
-
 </x-store-layout>

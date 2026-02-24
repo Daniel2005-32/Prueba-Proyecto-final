@@ -2,16 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Data\ProductData;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $featured = Product::where('is_featured', true)->take(4)->get();
-        $trending = Product::where('is_trend', true)->take(4)->get();
-        $exclusive = Product::where('is_exclusive', true)->take(4)->get();
+        // Obtener productos como arrays
+        $featuredArrays = ProductData::getFeatured();
+        $trendingArrays = ProductData::getTrending();
+        $exclusiveArrays = ProductData::getByCategory('figuras');
+        
+        // Convertir arrays a objetos para la vista
+        $featured = collect($featuredArrays)->map(function($item) {
+            return (object) $item;
+        });
+        
+        $trending = collect($trendingArrays)->map(function($item) {
+            return (object) $item;
+        });
+        
+        $exclusive = collect($exclusiveArrays)->map(function($item) {
+            return (object) $item;
+        });
         
         return view('home', compact('featured', 'trending', 'exclusive'));
     }

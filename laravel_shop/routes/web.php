@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Products
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+Route::prefix('products')->name('products.')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    Route::get('/category/{categorySlug}', [ProductController::class, 'byCategory'])->name('category');
+    Route::get('/{slug}', [ProductController::class, 'show'])->name('show');
+});
 
-// Cart (simplified)
+// Cart
 Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.index');
 Route::post('/cart/checkout', [OrderController::class, 'checkout'])->name('cart.checkout');
@@ -22,13 +25,15 @@ Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.ind
 Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show');
 Route::post('/auctions/{id}/bid', [AuctionController::class, 'placeBid'])->name('auctions.bid');
 
-// Auth routes (default Laravel Auth)
-require __DIR__.'/auth.php';
-
+// Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/{any?}', function () {
-    return view('app');
-})->where('any', '.*');
+// Auth routes
+require __DIR__.'/auth.php';
+
+// Catch-all for React (si lo necesitas)
+// Route::get('/{any}', function () {
+//     return view('app');
+// })->where('any', '.*');
