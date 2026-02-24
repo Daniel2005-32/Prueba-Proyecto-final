@@ -7,7 +7,7 @@ class ProductData
     public static function getAll(): array
     {
         return [
-            // Consolas
+            // ========== CONSOLAS ==========
             'ps5' => [
                 'name' => 'PlayStation 5',
                 'slug' => 'ps5',
@@ -45,73 +45,50 @@ class ProductData
                 'trending' => true
             ],
 
-            // Accesorios
-            'auriculares-rgb' => [
-                'name' => 'Auriculares Gaming RGB',
-                'slug' => 'auriculares-rgb',
-                'description' => 'Sonido surround 7.1 con micrófono retráctil y iluminación RGB',
-                'price' => 89.99,
-                'image' => 'https://images.unsplash.com/photo-1640823127518-65e1ad563576?w=500',
-                'category' => 'Accesorios',
-                'category_slug' => 'accesorios',
+            // ========== VIDEOJUEGOS ==========
+            'spider-man-2' => [
+                'name' => 'Marvel\'s Spider-Man 2',
+                'slug' => 'spider-man-2',
+                'description' => 'Exclusivo de PlayStation 5 - Continúa la historia de Peter Parker y Miles Morales',
+                'price' => 79.99,
+                'image' => 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=500',
+                'category' => 'Videojuegos',
+                'category_slug' => 'videojuegos',
+                'platform' => 'PS5',
                 'stock' => 15,
                 'featured' => true,
-                'trending' => false
+                'trending' => true
             ],
-            'teclado-mecanico' => [
-                'name' => 'Teclado Mecánico RGB',
-                'slug' => 'teclado-mecanico',
-                'description' => 'Switches mecánicos blue con retroiluminación RGB personalizable',
-                'price' => 119.99,
-                'image' => 'https://images.unsplash.com/photo-1645802106095-765b7e86f5bb?w=500',
-                'category' => 'Accesorios',
-                'category_slug' => 'accesorios',
+            'zelda-totk' => [
+                'name' => 'The Legend of Zelda: Tears of the Kingdom',
+                'slug' => 'zelda-totk',
+                'description' => 'La aventura épica de Link continúa en Nintendo Switch',
+                'price' => 69.99,
+                'image' => 'https://images.unsplash.com/photo-1616587894289-86480e533129?w=500',
+                'category' => 'Videojuegos',
+                'category_slug' => 'videojuegos',
+                'platform' => 'Nintendo Switch',
                 'stock' => 8,
                 'featured' => true,
                 'trending' => true
             ],
-            'mouse-gaming' => [
-                'name' => 'Mouse Gaming RGB',
-                'slug' => 'mouse-gaming',
-                'description' => 'Sensor óptico de 16000 DPI con 8 botones programables',
-                'price' => 59.99,
-                'image' => 'https://images.unsplash.com/photo-1606811841689-23dfdcebcb89?w=500',
-                'category' => 'Accesorios',
-                'category_slug' => 'accesorios',
+            'starfield' => [
+                'name' => 'Starfield',
+                'slug' => 'starfield',
+                'description' => 'El épico RPG espacial de Bethesda para Xbox',
+                'price' => 69.99,
+                'image' => 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500',
+                'category' => 'Videojuegos',
+                'category_slug' => 'videojuegos',
+                'platform' => 'Xbox Series X|S',
                 'stock' => 12,
-                'featured' => false,
-                'trending' => false
-            ],
-
-            // Figuras
-            'figura-goku' => [
-                'name' => 'Figura Goku Ultra Instinct',
-                'slug' => 'figura-goku',
-                'description' => 'Figura de colección de 30cm con base incluida',
-                'price' => 45.99,
-                'image' => 'https://images.unsplash.com/photo-1765633358966-45a72a11fdaa?w=500',
-                'category' => 'Figuras',
-                'category_slug' => 'figuras',
-                'stock' => 4,
                 'featured' => false,
                 'trending' => true
             ],
-            'figura-naruto' => [
-                'name' => 'Figura Naruto Sage Mode',
-                'slug' => 'figura-naruto',
-                'description' => 'Figura articulada de 25cm con accesorios',
-                'price' => 39.99,
-                'image' => 'https://images.unsplash.com/photo-1613376023733-0a44915a269c?w=500',
-                'category' => 'Figuras',
-                'category_slug' => 'figuras',
-                'stock' => 6,
-                'featured' => true,
-                'trending' => false
-            ],
 
-            // Manga
+            // ========== MANGA ==========
             'one-piece-box' => [
-                'name' => 'Manga One Piece Box Set',
+                'name' => 'One Piece Box Set',
                 'slug' => 'one-piece-box',
                 'description' => 'Colección completa tomos 1-23 con estuche especial',
                 'price' => 189.99,
@@ -123,7 +100,7 @@ class ProductData
                 'trending' => true
             ],
             'naruto-box' => [
-                'name' => 'Manga Naruto Box Set',
+                'name' => 'Naruto Box Set',
                 'slug' => 'naruto-box',
                 'description' => 'Colección completa tomos 1-27',
                 'price' => 199.99,
@@ -133,6 +110,82 @@ class ProductData
                 'stock' => 3,
                 'featured' => false,
                 'trending' => false
+            ],
+            'jujutsu-kaisen' => [
+                'name' => 'Jujutsu Kaisen Vol. 1-10',
+                'slug' => 'jujutsu-kaisen',
+                'description' => 'Los primeros 10 volúmenes del éxito de ventas',
+                'price' => 89.99,
+                'image' => 'https://images.unsplash.com/photo-1618336753974-8f4e44f1c1b4?w=500',
+                'category' => 'Manga',
+                'category_slug' => 'manga',
+                'stock' => 5,
+                'featured' => true,
+                'trending' => false
+            ],
+
+            // ========== PRODUCTOS ANIME ==========
+            'figura-goku' => [
+                'name' => 'Figura Goku Ultra Instinct',
+                'slug' => 'figura-goku',
+                'description' => 'Figura de colección de 30cm con base incluida',
+                'price' => 45.99,
+                'image' => 'https://images.unsplash.com/photo-1765633358966-45a72a11fdaa?w=500',
+                'category' => 'Productos Anime',
+                'category_slug' => 'productos-anime',
+                'stock' => 4,
+                'featured' => true,
+                'trending' => true
+            ],
+            'figura-naruto' => [
+                'name' => 'Figura Naruto Sage Mode',
+                'slug' => 'figura-naruto',
+                'description' => 'Figura articulada de 25cm con accesorios',
+                'price' => 39.99,
+                'image' => 'https://images.unsplash.com/photo-1613376023733-0a44915a269c?w=500',
+                'category' => 'Productos Anime',
+                'category_slug' => 'productos-anime',
+                'stock' => 6,
+                'featured' => true,
+                'trending' => false
+            ],
+            'taza-anime' => [
+                'name' => 'Taza Térmica Anime',
+                'slug' => 'taza-anime',
+                'description' => 'Taza con diseño de varios personajes, capacidad 350ml',
+                'price' => 14.99,
+                'image' => 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=500',
+                'category' => 'Productos Anime',
+                'category_slug' => 'productos-anime',
+                'stock' => 15,
+                'featured' => true,
+                'trending' => false
+            ],
+
+            // ========== COSPLAY ==========
+            'annayamada-cosplay' => [
+                'name' => 'Cosplay Anna Yamada',
+                'slug' => 'annayamada-cosplay',
+                'description' => 'Disfraz oficial de Anna Yamada del anime "Boku no Kokoro no Yabai Yatsu". Incluye peluca, uniforme escolar y accesorios. Tallas S-M-L disponibles.',
+                'price' => 89.99,
+                'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTFfFsSLh5Cb-VR-lz16EHcGawo6v0Uo0jUA&s', // <-- IMAGEN ACTUALIZADA
+                'category' => 'Cosplay',
+                'category_slug' => 'cosplay',
+                'stock' => 3,
+                'featured' => true,
+                'trending' => true
+            ],
+            'asuka-cosplay' => [
+                'name' => 'Cosplay Asuka Langley',
+                'slug' => 'asuka-cosplay',
+                'description' => 'Disfraz de Asuka Langley de Evangelion. Mono de batalla rojo completo con accesorios.',
+                'price' => 129.99,
+                'image' => 'https://images.unsplash.com/photo-1541188498278-1c91f82d6f9d?w=500',
+                'category' => 'Cosplay',
+                'category_slug' => 'cosplay',
+                'stock' => 2,
+                'featured' => false,
+                'trending' => true
             ]
         ];
     }

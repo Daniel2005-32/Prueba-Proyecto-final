@@ -12,7 +12,7 @@ class HomeController extends Controller
         // Obtener productos como arrays
         $featuredArrays = ProductData::getFeatured();
         $trendingArrays = ProductData::getTrending();
-        $exclusiveArrays = ProductData::getByCategory('figuras');
+        $exclusiveArrays = ProductData::getByCategory('cosplay'); // Destacamos cosplay en exclusivos
         
         // Convertir arrays a objetos para la vista
         $featured = collect($featuredArrays)->map(function($item) {

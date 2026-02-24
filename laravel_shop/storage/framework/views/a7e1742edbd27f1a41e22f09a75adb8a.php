@@ -41,13 +41,14 @@
                         </a>
                     </div>
 
-                    <!-- Navegación -->
+                    <!-- Navegación - CON COSPLAY INCLUIDO -->
                     <nav class="hidden md:flex space-x-6 items-center">
-                        <a href="<?php echo e(route('products.index', ['category' => 'videojuegos'])); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover">Videojuegos</a>
-                        <a href="<?php echo e(route('products.index', ['category' => 'manga'])); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover">Manga</a>
-                        <a href="<?php echo e(route('products.index', ['category' => 'figuras'])); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover">Figuras de Anime</a>
-                        <a href="<?php echo e(route('products.index', ['category' => 'productos-anime'])); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover">Productos de Anime</a>
-                        <a href="<?php echo e(route('products.index', ['category' => 'cosplay'])); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover">Cosplay</a>
+                        <a href="<?php echo e(route('products.category', 'consolas')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/consolas') ? 'text-neon-blue' : ''); ?>">Consolas</a>
+                        <a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/videojuegos') ? 'text-neon-blue' : ''); ?>">Videojuegos</a>
+                        <a href="<?php echo e(route('products.category', 'manga')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/manga') ? 'text-neon-blue' : ''); ?>">Manga</a>
+                        <a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/productos-anime') ? 'text-neon-blue' : ''); ?>">Productos Anime</a>
+                        <a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/cosplay') ? 'text-neon-blue' : ''); ?>">Cosplay</a>
+                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">Ofertas</a>
                     </nav>
 
                     <!-- Acciones Derecha -->
@@ -101,7 +102,7 @@
             </div>
         </main>
         
-        <!-- Footer -->
+        <!-- Footer - ACTUALIZADO CON COSPLAY -->
         <footer class="bg-black/80 border-t border-gray-800 py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="col-span-1 md:col-span-2">
@@ -110,25 +111,27 @@
                         <span class="ml-2 text-xl font-bold tracking-tighter">GAMER <span class="text-neon-purple">GUILD</span></span>
                     </div>
                     <p class="text-gray-500 text-sm max-w-xs">
-                        Tu santuario definitivo para todo lo relacionado con videojuegos, anime y cultura geek. Únete a la hermandad.
+                        Tu santuario definitivo para consolas, videojuegos, manga, productos anime y cosplay. Únete a la hermandad.
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-neon-blue font-bold uppercase tracking-widest text-sm mb-4">Enlaces</h3>
+                    <h3 class="text-neon-blue font-bold uppercase tracking-widest text-sm mb-4">Categorías</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">Sobre nosotros</a></li>
-                        <li><a href="#" class="hover:text-white transition">Términos y condiciones</a></li>
-                        <li><a href="#" class="hover:text-white transition">Privacidad</a></li>
+                        <li><a href="<?php echo e(route('products.category', 'consolas')); ?>" class="hover:text-white transition">Consolas</a></li>
+                        <li><a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="hover:text-white transition">Videojuegos</a></li>
+                        <li><a href="<?php echo e(route('products.category', 'manga')); ?>" class="hover:text-white transition">Manga</a></li>
+                        <li><a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="hover:text-white transition">Productos Anime</a></li>
+                        <li><a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="hover:text-white transition">Cosplay</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-neon-purple font-bold uppercase tracking-widest text-sm mb-4">Redes Sociales</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-neon-blue transition">
-                            <span class="sr-only">Twitter</span>
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                        </a>
-                    </div>
+                    <h3 class="text-neon-purple font-bold uppercase tracking-widest text-sm mb-4">Enlaces</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="<?php echo e(route('home')); ?>" class="hover:text-white transition">Inicio</a></li>
+                        <li><a href="<?php echo e(route('products.index')); ?>" class="hover:text-white transition">Todos los productos</a></li>
+                        <li><a href="<?php echo e(route('offers')); ?>" class="hover:text-white transition">Ofertas</a></li>
+                        <li><a href="<?php echo e(route('contact')); ?>" class="hover:text-white transition">Contacto</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="mt-8 pt-8 border-t border-gray-900 text-center text-xs text-gray-600">
@@ -136,5 +139,8 @@
             </div>
         </footer>
     </div>
+
+    <!-- Alpine.js para el dropdown del usuario -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html><?php /**PATH /home/ctk/Documentos/Proyecto_Daniel/Proyecto-final-main/laravel_shop/resources/views/components/store-layout.blade.php ENDPATH**/ ?>

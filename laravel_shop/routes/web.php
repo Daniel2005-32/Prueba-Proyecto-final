@@ -15,6 +15,32 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{slug}', [ProductController::class, 'show'])->name('show');
 });
 
+// Offers
+Route::get('/ofertas', function () {
+    $offers = [
+        (object)[
+            'name' => 'PlayStation 5',
+            'price' => 449.99,
+            'original_price' => 499.99,
+            'image' => 'https://images.unsplash.com/photo-1644571580646-7048372c491a?w=500',
+            'slug' => 'ps5'
+        ],
+        (object)[
+            'name' => 'Nintendo Switch OLED',
+            'price' => 299.99,
+            'original_price' => 349.99,
+            'image' => 'https://images.unsplash.com/photo-1676261233849-0755de764396?w=500',
+            'slug' => 'switch-oled'
+        ]
+    ];
+    return view('offers', compact('offers'));
+})->name('offers');
+
+// Contact
+Route::get('/contacto', function () {
+    return view('contact');
+})->name('contact');
+
 // Cart
 Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.index');
@@ -32,8 +58,3 @@ Route::get('/dashboard', function () {
 
 // Auth routes
 require __DIR__.'/auth.php';
-
-// Catch-all for React (si lo necesitas)
-// Route::get('/{any}', function () {
-//     return view('app');
-// })->where('any', '.*');
