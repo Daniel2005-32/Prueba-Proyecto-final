@@ -17,12 +17,7 @@
     <style>
         .neon-text-blue { text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff; }
         .neon-text-purple { text-shadow: 0 0 5px #9d00ff, 0 0 10px #9d00ff; }
-        .neon-border-blue { box-shadow: 0 0 5px #00d2ff, inset 0 0 5px #00d2ff; }
-        .nav-link-hover:hover {
-            color: #00d2ff;
-            text-shadow: 0 0 8px #00d2ff;
-            transform: translateY(-2px);
-        }
+        .neon-text-red { text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055; }
     </style>
 </head>
 <body class="font-sans antialiased bg-gamer-dark text-gray-100">
@@ -41,37 +36,22 @@
                         </a>
                     </div>
 
-                    <!-- Navegación - CON PRODUCTOS ANIME (FUSIONADO) -->
+                    <!-- Menú original -->
                     <nav class="hidden md:flex space-x-6 items-center">
-                        <a href="<?php echo e(route('products.category', 'consolas')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/consolas') ? 'text-neon-blue' : ''); ?>">
-                            Consolas
-                        </a>
-                        <a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/videojuegos') ? 'text-neon-blue' : ''); ?>">
-                            Videojuegos
-                        </a>
-                        <a href="<?php echo e(route('products.category', 'manga')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/manga') ? 'text-neon-blue' : ''); ?>">
-                            Manga
-                        </a>
-                        <a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/productos-anime') ? 'text-neon-blue' : ''); ?>">
-                            Productos Anime
-                        </a>
-                        <a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/cosplay') ? 'text-neon-blue' : ''); ?>">
-                            Cosplay
-                        </a>
-                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">
-                            Ofertas
-                        </a>
+                        <a href="<?php echo e(route('products.category', 'consolas')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/consolas') ? 'text-neon-blue' : ''); ?>">Consolas</a>
+                        <a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/videojuegos') ? 'text-neon-blue' : ''); ?>">Videojuegos</a>
+                        <a href="<?php echo e(route('products.category', 'manga')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/manga') ? 'text-neon-blue' : ''); ?>">Manga</a>
+                        <a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/productos-anime') ? 'text-neon-blue' : ''); ?>">Productos Anime</a>
+                        <a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/cosplay') ? 'text-neon-blue' : ''); ?>">Cosplay</a>
+                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">Ofertas</a>
                     </nav>
 
-                    <!-- Acciones Derecha -->
+                    <!-- Acciones -->
                     <div class="flex items-center space-x-4">
                         <a href="<?php echo e(route('cart.index')); ?>" class="relative p-2 text-gray-400 hover:text-neon-blue transition">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             <?php if(session('cart')): ?>
-                                <span class="absolute top-0 right-0 bg-neon-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-[0_0_10px_#ff0055]">
-                                    <?php echo e(count(session('cart'))); ?>
-
-                                </span>
+                                <span class="absolute top-0 right-0 bg-neon-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><?php echo e(count(session('cart'))); ?></span>
                             <?php endif; ?>
                         </a>
 
@@ -83,76 +63,66 @@
                                     <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                 </button>
                                 <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-gamer-card border border-gray-700 rounded-md shadow-xl py-1 z-50">
-                                    <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">Panel de Control</a>
+                                    <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">Panel</a>
                                     <form method="POST" action="<?php echo e(route('logout')); ?>">
                                         <?php echo csrf_field(); ?>
-                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red">Cerrar Sesión</button>
+                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red">Cerrar</button>
                                     </form>
                                 </div>
                             </div>
                         <?php else: ?>
                             <a href="<?php echo e(route('login')); ?>" class="text-sm font-bold text-gray-400 hover:text-neon-blue transition">Entrar</a>
-                            <a href="<?php echo e(route('register')); ?>" class="px-4 py-2 bg-neon-purple text-white text-sm font-bold rounded hover:bg-neon-purple/80 transition shadow-[0_0_15px_rgba(157,0,255,0.4)]">Registro</a>
+                            <a href="<?php echo e(route('register')); ?>" class="px-4 py-2 bg-neon-purple text-white text-sm font-bold rounded hover:bg-neon-purple/80 transition">Registro</a>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Contenido Principal -->
-        <main class="flex-grow py-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <?php if(session('success')): ?>
-                    <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-6 backdrop-blur-sm">
-                        <?php echo e(session('success')); ?>
-
-                    </div>
-                <?php endif; ?>
-                
-                <?php echo e($slot); ?>
-
+        <!-- CONTENEDOR PRINCIPAL CON FONDO DE IMÁGENES LATERALES -->
+        <div class="relative flex-grow">
+            <!-- FONDO IZQUIERDO - Imagen anime que ocupa toda la mitad -->
+            <div class="fixed left-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1887&auto=format&fit=crop" 
+                     alt="Anime Collection" 
+                     class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gamer-dark"></div>
             </div>
-        </main>
-        
+
+            <!-- FONDO DERECHO - Imagen gaming que ocupa toda la mitad -->
+            <div class="fixed right-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Gaming Setup" 
+                     class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-l from-transparent to-gamer-dark"></div>
+            </div>
+
+            <!-- CONTENIDO CENTRAL -->
+            <div class="relative z-10 min-h-screen">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <?php if(session('success')): ?>
+                        <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-6">
+                            <?php echo e(session('success')); ?>
+
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php echo e($slot); ?>
+
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
-        <footer class="bg-black/80 border-t border-gray-800 py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center mb-4">
-                        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Logo" class="h-10 w-auto">
-                        <span class="ml-2 text-xl font-bold tracking-tighter">GAMER <span class="text-neon-purple">GUILD</span></span>
-                    </div>
-                    <p class="text-gray-500 text-sm max-w-xs">
-                        Tu santuario definitivo para consolas, videojuegos, manga, productos anime y cosplay. Únete a la hermandad.
-                    </p>
+        <footer class="bg-black/80 border-t border-gray-800 py-12 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center text-gray-500 text-sm">
+                    &copy; <?php echo e(date('Y')); ?> Gamer Guild. Todos los derechos reservados.
                 </div>
-                <div>
-                    <h3 class="text-neon-blue font-bold uppercase tracking-widest text-sm mb-4">Categorías</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="<?php echo e(route('products.category', 'consolas')); ?>" class="hover:text-white transition">Consolas</a></li>
-                        <li><a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="hover:text-white transition">Videojuegos</a></li>
-                        <li><a href="<?php echo e(route('products.category', 'manga')); ?>" class="hover:text-white transition">Manga</a></li>
-                        <li><a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="hover:text-white transition">Productos Anime</a></li>
-                        <li><a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="hover:text-white transition">Cosplay</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-neon-purple font-bold uppercase tracking-widest text-sm mb-4">Enlaces</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="<?php echo e(route('home')); ?>" class="hover:text-white transition">Inicio</a></li>
-                        <li><a href="<?php echo e(route('products.index')); ?>" class="hover:text-white transition">Todos los productos</a></li>
-                        <li><a href="<?php echo e(route('offers')); ?>" class="hover:text-white transition">Ofertas</a></li>
-                        <li><a href="<?php echo e(route('contact')); ?>" class="hover:text-white transition">Contacto</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-8 pt-8 border-t border-gray-900 text-center text-xs text-gray-600">
-                &copy; <?php echo e(date('Y')); ?> Gamer Guild. Todos los derechos reservados.
             </div>
         </footer>
     </div>
 
-    <!-- Alpine.js para el dropdown del usuario -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

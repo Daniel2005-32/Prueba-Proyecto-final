@@ -1,4 +1,4 @@
-<div class="group bg-gamer-card rounded-2xl overflow-hidden border border-gray-800 hover:border-neon-blue/50 transition duration-300 shadow-xl relative">
+<div class="group rounded-2xl overflow-hidden border border-gray-800 hover:border-neon-blue/50 transition duration-300 shadow-xl relative">
     
     <!-- BADGE EXCLUSIVO -->
     <?php if($product->is_exclusive): ?>
