@@ -5,8 +5,16 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Ruta principal
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Products
@@ -24,11 +32,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
 // Chat routes (API)
 Route::prefix('chat')->name('chat.')->group(function () {
-    // Ruta para obtener mensajes (GET)
-    Route::get('/', [ChatController::class, 'index'])->name('index');
     Route::get('/refresh', [ChatController::class, 'refresh'])->name('refresh');
-    // Ruta para enviar mensajes (POST) - requiere auth
     Route::post('/', [ChatController::class, 'store'])->name('store')->middleware('auth');
+});
+
+// Profile routes
+Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
+    Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+    Route::put('/update', [ProfileController::class, 'update'])->name('update');
+    Route::put('/password', [ProfileController::class, 'changePassword'])->name('password');
+    Route::post('/avatar', [ProfileController::class, 'uploadAvatar'])->name('avatar');
 });
 
 // Offers
@@ -61,21 +75,6 @@ Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.sh
 Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index');
 Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show');
 Route::post('/auctions/{id}/bid', [AuctionController::class, 'placeBid'])->name('auctions.bid')->middleware('auth');
-
-// Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-// Profile routes
-Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
-    Route::get('/', function () { return view('profile.edit'); })->name('edit');
-    Route::patch('/', function () { return back()->with('success', 'Perfil actualizado'); })->name('update');
-    Route::delete('/', function () { 
-        auth()->user()->delete(); 
-        return redirect('/'); 
-    })->name('destroy');
-});
 
 // Auth routes
 require __DIR__.'/auth.php';

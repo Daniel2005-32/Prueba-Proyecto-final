@@ -1,62 +1,80 @@
 <x-store-layout>
     <div class="py-12">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-6">
-                <a href="{{ url()->previous() }}" class="text-gray-400 hover:text-neon-blue transition">
-                    ← Volver
-                </a>
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Cabecera -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-black text-white mb-2">
+                    <span class="text-neon-blue">✏️ Editar perfil</span>
+                </h1>
+                <p class="text-gray-400">Modifica tu información personal</p>
             </div>
 
+            <!-- Formulario de edición -->
             <div class="bg-gamer-card rounded-2xl border border-neon-blue/20 p-8">
-                <h1 class="text-3xl font-black text-white mb-6">Mi Perfil</h1>
-                
-                @if(session('success'))
-                    <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-6">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                
-                <form method="POST" action="{{ route('profile.update') }}" class="space-y-6">
+                <form action="{{ route('profile.update') }}" method="POST" class="space-y-6">
                     @csrf
-                    @method('PATCH')
-                    
+                    @method('PUT')
+
                     <div>
-                        <label class="block text-gray-300 mb-2">Nombre</label>
-                        <input type="text" name="name" value="{{ auth()->user()->name }}" 
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue">
+                        <label class="block text-gray-300 mb-2 font-bold">Nombre</label>
+                        <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition @error('name') border-neon-red @enderror">
                         @error('name')
-                            <p class="text-neon-red text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-neon-red">{{ $message }}</p>
                         @enderror
                     </div>
-                    
+
                     <div>
-                        <label class="block text-gray-300 mb-2">Email</label>
-                        <input type="email" name="email" value="{{ auth()->user()->email }}" 
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue">
+                        <label class="block text-gray-300 mb-2 font-bold">Email</label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-blue transition @error('email') border-neon-red @enderror">
                         @error('email')
-                            <p class="text-neon-red text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-neon-red">{{ $message }}</p>
                         @enderror
                     </div>
-                    
-                    <div class="pt-4">
-                        <button type="submit" class="px-6 py-3 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition">
-                            Actualizar perfil
+
+                    <div class="flex space-x-4 pt-4">
+                        <button type="submit" class="px-8 py-3 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(0,210,255,0.4)]">
+                            Guardar cambios
                         </button>
+                        <a href="{{ route('profile.index') }}" class="px-8 py-3 bg-gray-800 text-gray-300 font-bold rounded-lg hover:bg-gray-700 transition">
+                            Cancelar
+                        </a>
                     </div>
                 </form>
+            </div>
+
+            <!-- Cambiar contraseña -->
+            <div class="mt-8 bg-gamer-card rounded-2xl border border-neon-purple/20 p-8">
+                <h2 class="text-2xl font-bold text-white mb-6">Cambiar contraseña</h2>
                 
-                <hr class="border-gray-800 my-8">
-                
-                <div>
-                    <h2 class="text-xl font-bold text-white mb-4">Zona peligrosa</h2>
-                    <form method="POST" action="{{ route('profile.destroy') }}" onsubmit="return confirm('¿Estás seguro? Esta acción no se puede deshacer.')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="px-6 py-3 bg-neon-red/20 text-neon-red font-bold rounded-lg hover:bg-neon-red hover:text-white transition">
-                            Eliminar cuenta
-                        </button>
-                    </form>
-                </div>
+                <form action="{{ route('profile.password') }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-bold">Contraseña actual</label>
+                        <input type="password" name="current_password" required
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-bold">Nueva contraseña</label>
+                        <input type="password" name="new_password" required minlength="8"
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition">
+                        <p class="text-xs text-gray-500 mt-1">Mínimo 8 caracteres</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-bold">Confirmar nueva contraseña</label>
+                        <input type="password" name="new_password_confirmation" required
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition">
+                    </div>
+
+                    <button type="submit" class="px-8 py-3 bg-neon-purple text-white font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(157,0,255,0.4)]">
+                        Cambiar contraseña
+                    </button>
+                </form>
             </div>
         </div>
     </div>

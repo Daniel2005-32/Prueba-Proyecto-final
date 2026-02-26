@@ -36,7 +36,7 @@
                         </a>
                     </div>
 
-                    <!-- Menú con categorías (sin inicio duplicado) -->
+                    <!-- Menú con categorías -->
                     <nav class="hidden md:flex space-x-6 items-center">
                         <a href="{{ route('products.category', 'consolas') }}" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover {{ request()->is('products/category/consolas') ? 'text-neon-blue' : '' }}">Consolas</a>
                         <a href="{{ route('products.category', 'videojuegos') }}" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover {{ request()->is('products/category/videojuegos') ? 'text-neon-blue' : '' }}">Videojuegos</a>
@@ -64,9 +64,11 @@
                                     </svg>
                                 </button>
                                 <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-gamer-card border border-gray-700 rounded-md shadow-xl py-1 z-50">
+                                    <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">👤 Mi Perfil</a>
                                     @if(Auth::user()->is_admin)
                                         <a href="{{ route('admin.products.index') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">👑 Panel Admin</a>
                                     @endif
+                                    <div class="border-t border-gray-800 my-1"></div>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red">
