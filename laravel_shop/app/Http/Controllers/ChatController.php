@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+    /**
+     * Verificar si el usuario está baneado
+     */
+    private function checkBanned()
+    {
+        if (Auth::check() && Auth::user()->isBanned()) {
+            return response()->json(['error' => 'No puedes enviar mensajes mientras estás baneado'], 403);
+        }
+        return null;
+    }
+
     public function index()
     {
         $messages = Message::with('user')
@@ -37,26 +48,20 @@ class ChatController extends Controller
 
     public function store(Request $request)
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $request->validate([
             'message' => 'required|string|max:500',
         ]);
 
-        // Guardar el mensaje
         $message = Message::create([
             'user_id' => Auth::id(),
             'message' => $request->message,
         ]);
 
-        // ============================================
-        // LIMPIEZA AUTOMÁTICA: Eliminar mensajes de más de 1 hora
-        // ============================================
         $limitDate = now()->subHours(1);
-        $deleted = Message::where('created_at', '<', $limitDate)->delete();
-        
-        // Opcional: Registrar en log cuántos se eliminaron
-        if ($deleted > 0) {
-            \Log::info("🧹 Limpieza automática: {$deleted} mensajes eliminados (más de 1 hora)");
-        }
+        Message::where('created_at', '<', $limitDate)->delete();
 
         return response()->json([
             'success' => true,
@@ -65,25 +70,6 @@ class ChatController extends Controller
             'user_name' => Auth::user()->name,
             'message' => CensorHelper::censor($message->message),
             'time' => $message->created_at->diffForHumans()
-        ]);
-    }
-
-    /**
-     * Método adicional para limpieza manual (opcional)
-     */
-    public function clean()
-    {
-        if (!auth()->check() || !auth()->user()->is_admin) {
-            return response()->json(['error' => 'No autorizado'], 403);
-        }
-
-        $limitDate = now()->subHours(1);
-        $deleted = Message::where('created_at', '<', $limitDate)->delete();
-
-        return response()->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "Se eliminaron {$deleted} mensajes antiguos"
         ]);
     }
 }

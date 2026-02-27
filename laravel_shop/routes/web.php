@@ -43,6 +43,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('users/{user}/toggle-admin', [App\Http\Controllers\Admin\UserController::class, 'toggleAdmin'])->name('users.toggle-admin');
 });
 
+// Admin routes - Baneos
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::resource('bans', App\Http\Controllers\Admin\BanController::class);
+    Route::post('bans/unban/{user}', [App\Http\Controllers\Admin\BanController::class, 'unban'])->name('bans.unban');
+});
+
 // Ruta para limpiar mensajes manualmente (solo admins)
 Route::get('/admin/clean-messages', function() {
     if (!auth()->check() || !auth()->user()->is_admin) {
@@ -52,45 +58,23 @@ Route::get('/admin/clean-messages', function() {
     $deleted = \Illuminate\Support\Facades\Artisan::call('messages:delete-old --hours=1');
     
     return redirect()->back()->with('success', "Mensajes antiguos eliminados correctamente.");
-})->name('admin.clean.messages');
+})->name('admin.clean.messages')->middleware('auth');
 
 // ============================================
-// RUTAS DE SUBASTAS (COMPLETAS)
+// RUTAS DE SUBASTAS
 // ============================================
 Route::prefix('auctions')->name('auctions.')->group(function () {
-    // Rutas públicas
     Route::get('/', [AuctionController::class, 'index'])->name('index');
     Route::get('/{id}', [AuctionController::class, 'show'])->name('show');
-    
-    // Ruta para confirmar subasta (desde producto exclusivo)
-    Route::get('/confirm/{id}', [AuctionController::class, 'confirm'])->name('confirm');
-    
-    // Rutas para usuarios autenticados (pujar)
+    Route::get('/confirm/{id}', [AuctionController::class, 'confirm'])->name('confirm')->middleware('auth');
     Route::post('/{id}/bid', [AuctionController::class, 'bid'])->name('bid')->middleware('auth');
-    
-    // Rutas para iniciar/cancelar subastas (usuario que compró el exclusivo)
     Route::post('/start/{id}', [AuctionController::class, 'start'])->name('start')->middleware('auth');
     Route::post('/cancel/{id}', [AuctionController::class, 'cancel'])->name('cancel')->middleware('auth');
-    
-    // Ruta para reclamar premio (ganador de subasta)
     Route::post('/claim/{id}', [AuctionController::class, 'claimPrize'])->name('claim')->middleware('auth');
-});
-
-// ============================================
-// RUTAS DE ADMINISTRACIÓN DE SUBASTAS (SOLO ADMINS)
-// ============================================
-Route::prefix('auctions')->name('auctions.')->middleware('auth')->group(function () {
-    // Extender tiempo de subasta
-    Route::post('/{id}/extend', [AuctionController::class, 'extendAuction'])->name('extend');
-    
-    // Reducir tiempo de subasta
-    Route::post('/{id}/reduce', [AuctionController::class, 'reduceAuction'])->name('reduce');
-    
-    // Reiniciar a 24 horas
-    Route::post('/{id}/reset', [AuctionController::class, 'resetAuctionTime'])->name('reset');
-    
-    // Finalizar subasta forzosamente
-    Route::post('/{id}/force-end', [AuctionController::class, 'forceEndAuction'])->name('force-end');
+    Route::post('/{id}/extend', [AuctionController::class, 'extendAuction'])->name('extend')->middleware('auth');
+    Route::post('/{id}/reduce', [AuctionController::class, 'reduceAuction'])->name('reduce')->middleware('auth');
+    Route::post('/{id}/reset', [AuctionController::class, 'resetAuctionTime'])->name('reset')->middleware('auth');
+    Route::post('/{id}/force-end', [AuctionController::class, 'forceEndAuction'])->name('force-end')->middleware('auth');
 });
 
 // ============================================
@@ -144,11 +128,11 @@ Route::get('/contacto', function () {
 // ============================================
 // RUTAS DE CARRITO Y PEDIDOS
 // ============================================
-Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
-Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.index');
-Route::post('/cart/update/{id}', [OrderController::class, 'updateCart'])->name('cart.update');
-Route::post('/cart/remove/{id}', [OrderController::class, 'removeFromCart'])->name('cart.remove');
-Route::post('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear');
+Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add')->middleware('auth');
+Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.index')->middleware('auth');
+Route::post('/cart/update/{id}', [OrderController::class, 'updateCart'])->name('cart.update')->middleware('auth');
+Route::post('/cart/remove/{id}', [OrderController::class, 'removeFromCart'])->name('cart.remove')->middleware('auth');
+Route::post('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear')->middleware('auth');
 Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('cart.checkout.form')->middleware('auth');
 Route::post('/checkout', [OrderController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
 
@@ -158,6 +142,6 @@ Route::post('/checkout', [OrderController::class, 'checkout'])->name('cart.check
 Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
 
 // ============================================
-// RUTAS DE AUTENTICACIÓN (Laravel Breeze/Jetstream)
+// RUTAS DE AUTENTICACIÓN
 // ============================================
 require __DIR__.'/auth.php';

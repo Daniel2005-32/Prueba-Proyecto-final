@@ -8,11 +8,26 @@ use App\Models\Product;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    /**
+     * Verificar si el usuario está baneado
+     */
+    private function checkBanned()
+    {
+        if (Auth::check() && Auth::user()->isBanned()) {
+            return redirect()->back()->with('error', 'No puedes realizar esta acción mientras estás baneado.');
+        }
+        return null;
+    }
+
     public function addToCart(Request $request, $id)
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $product = Product::findOrFail($id);
         
         if (!$product->inStock()) {
@@ -43,6 +58,9 @@ class OrderController extends Controller
 
     public function viewCart()
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $cart = Session::get('cart', []);
         $total = array_sum(array_map(function($item) {
             return $item['price'] * $item['quantity'];
@@ -53,6 +71,9 @@ class OrderController extends Controller
 
     public function updateCart(Request $request, $id)
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $cart = Session::get('cart', []);
         
         if (isset($cart[$id])) {
@@ -91,6 +112,9 @@ class OrderController extends Controller
 
     public function removeFromCart($id)
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $cart = Session::get('cart', []);
         
         if (isset($cart[$id])) {
@@ -103,12 +127,18 @@ class OrderController extends Controller
 
     public function clearCart()
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         Session::forget('cart');
         return redirect()->route('cart.index')->with('success', 'Carrito vaciado correctamente');
     }
 
     public function checkoutForm()
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         if (!auth()->check()) {
             return redirect()->route('login');
         }
@@ -128,6 +158,9 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $cart = Session::get('cart', []);
         
         if (empty($cart)) {
@@ -147,7 +180,6 @@ class OrderController extends Controller
             abort(403);
         }
 
-        // Verificar stock
         foreach ($cart as $productId => $item) {
             $product = Product::find($productId);
             if (!$product) {
