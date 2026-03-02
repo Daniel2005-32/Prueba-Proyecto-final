@@ -174,8 +174,15 @@ class OrderController extends Controller
             return redirect()->route('login');
         }
 
+        // Validar dirección
         $request->validate([
             'address_id' => 'required|exists:addresses,id'
+        ]);
+
+        // Validar datos de tarjeta (simulación)
+        $request->validate([
+            'card_last_four' => 'required|string|size:4',
+            'card_brand' => 'required|string|max:20',
         ]);
 
         $address = Address::find($request->address_id);
@@ -200,19 +207,15 @@ class OrderController extends Controller
             return $item['price'] * $item['quantity'];
         }, $cart));
 
-        // Crear el pedido con el subtotal (sin IVA) y datos de tarjeta
+        // Crear el pedido con los datos de tarjeta
         $orderData = [
             'user_id' => auth()->id(),
             'address_id' => $request->address_id,
             'total' => $subtotal,
-            'status' => 'pending'
+            'status' => 'pending',
+            'card_last_four' => $request->card_last_four,
+            'card_brand' => $request->card_brand
         ];
-        
-        // Guardar últimos 4 dígitos de la tarjeta (solo si se enviaron)
-        if ($request->has('card_last_four') && $request->card_last_four) {
-            $orderData['card_last_four'] = $request->card_last_four;
-            $orderData['card_brand'] = $request->card_brand ?? 'Desconocida';
-        }
 
         $order = Order::create($orderData);
 

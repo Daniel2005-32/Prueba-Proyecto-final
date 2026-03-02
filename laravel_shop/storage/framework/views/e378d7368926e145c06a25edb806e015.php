@@ -71,7 +71,7 @@
                         <span class="text-2xl text-neon-purple font-black"><?php echo e(number_format($order->total, 2)); ?>€</span>
                     </div>
                     
-                    <!-- Información de impuestos (solo texto, sin cálculo visible) -->
+                    <!-- Información de impuestos -->
                     <?php if($order->address): ?>
                         <?php
                             $province = $order->address->state;
@@ -84,6 +84,28 @@
                     <?php endif; ?>
                 </div>
             </div>
+
+            <!-- Información de pago -->
+            <?php if($order->card_last_four): ?>
+            <div class="bg-gamer-card rounded-2xl border border-neon-green/20 p-8 mb-6">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    💳 Información de pago
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-400 text-sm">Tarjeta</p>
+                        <p class="text-white font-bold"><?php echo e($order->card_brand ?? 'Desconocida'); ?> terminada en <?php echo e($order->card_last_four); ?></p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-sm">Estado del pago</p>
+                        <p class="text-green-400 font-bold">✅ Pagado</p>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Dirección de entrega -->
             <div class="bg-gamer-card rounded-2xl border border-neon-blue/20 p-8 mb-6">
