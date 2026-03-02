@@ -1,6 +1,7 @@
 <x-store-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Botón para volver -->
             <div class="mb-6">
                 <a href="{{ route('auctions.index') }}" class="text-gray-400 hover:text-neon-purple transition inline-flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,6 +12,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Imagen y detalles -->
                 <div class="lg:col-span-2">
                     <div class="bg-gamer-card rounded-2xl border border-neon-purple/30 overflow-hidden">
                         <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-96 object-cover">
@@ -33,7 +35,7 @@
                             @endif
                             
                             <div class="mt-8">
-                                <h2 class="text-xl font-bold text-white mb-4">Puja actual</h2>
+                                <h2 class="text-xl font-bold text-white mb-4">📊 Puja actual</h2>
                                 <div class="bg-gray-800/50 rounded-lg p-6 text-center">
                                     <p class="text-4xl font-black text-neon-purple">{{ number_format($product->price, 2) }}€</p>
                                     <p class="text-gray-400 mt-2">Mejor postor: {{ $product->auctionWinner->name ?? 'Nadie aún' }}</p>
@@ -43,6 +45,7 @@
                     </div>
                 </div>
                 
+                <!-- Panel de pujas -->
                 <div class="lg:col-span-1">
                     <div class="bg-gamer-card rounded-2xl border border-neon-purple/30 p-6 sticky top-24">
                         <h2 class="text-2xl font-bold text-white mb-6">💰 Pujar ahora</h2>
@@ -85,11 +88,13 @@
                                     <div class="bg-green-900/30 border border-green-500 rounded-lg p-6">
                                         <p class="text-green-400 text-lg font-bold mb-2">🎉 ¡FELICIDADES!</p>
                                         <p class="text-white mb-4">Has ganado esta subasta</p>
+                                        <p class="text-neon-purple text-2xl font-bold">{{ number_format($product->price, 2) }}€</p>
                                     </div>
                                 @elseif($product->auction_winner_id)
                                     <div class="bg-gray-800/50 rounded-lg p-6">
                                         <p class="text-gray-400">Subasta finalizada</p>
                                         <p class="text-neon-purple font-bold mt-2">Ganador: {{ $product->auctionWinner->name }}</p>
+                                        <p class="text-neon-purple mt-2">{{ number_format($product->price, 2) }}€</p>
                                     </div>
                                 @else
                                     <div class="bg-gray-800/50 rounded-lg p-6">

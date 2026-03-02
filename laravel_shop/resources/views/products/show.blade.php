@@ -27,11 +27,11 @@
                         
                         <p class="text-gray-400 mt-4">{{ $product->description }}</p>
                         
-                        <!-- Precio -->
+                        <!-- Precio SIN IVA -->
                         <div class="mt-6">
                             @if($product->isAuctionActive())
-                                <span class="text-3xl font-black text-neon-purple">{{ number_format($product->getCurrentBid(), 2) }}€</span>
-                                <span class="ml-2 text-gray-500 line-through text-lg">{{ number_format($product->price, 2) }}€</span>
+                                <span class="text-3xl font-black text-neon-purple">{{ number_format($product->price, 2) }}€</span>
+                                <span class="ml-2 text-gray-500 line-through text-lg">{{ number_format($product->auction_start_price ?? $product->price, 2) }}€</span>
                                 <p class="text-sm text-gray-400 mt-1">Subasta activa - {{ $product->auctionTimeLeft() }} restantes</p>
                             @elseif($product->original_price && $product->original_price > $product->price)
                                 <span class="text-3xl font-black text-neon-red">{{ number_format($product->price, 2) }}€</span>

@@ -128,11 +128,12 @@ class AuctionController extends Controller
     }
 
     // ============================================
-    // MÉTODOS PARA ADMINISTRADORES
+    // MÉTODOS PARA ADMINISTRADORES (CORREGIDOS)
     // ============================================
     
     public function extendAuction(Request $request, $id)
     {
+        // Verificar que es admin
         if (!auth()->check() || !auth()->user()->is_admin) {
             abort(403, 'Acceso no autorizado');
         }
@@ -147,15 +148,20 @@ class AuctionController extends Controller
             return back()->with('error', 'Este producto no está en subasta');
         }
         
-        $newEndTime = Carbon::parse($product->auction_end_time)->addHours($request->hours);
+        // Convertir a entero explícitamente
+        $hours = (int) $request->hours;
+        
+        // Extender el tiempo
+        $newEndTime = Carbon::parse($product->auction_end_time)->addHours($hours);
         $product->auction_end_time = $newEndTime;
         $product->save();
         
-        return back()->with('success', "✅ Subasta extendida {$request->hours} horas");
+        return redirect()->back()->with('success', "✅ Subasta extendida {$hours} horas");
     }
     
     public function reduceAuction(Request $request, $id)
     {
+        // Verificar que es admin
         if (!auth()->check() || !auth()->user()->is_admin) {
             abort(403, 'Acceso no autorizado');
         }
@@ -170,8 +176,13 @@ class AuctionController extends Controller
             return back()->with('error', 'Este producto no está en subasta');
         }
         
-        $newEndTime = Carbon::parse($product->auction_end_time)->subHours($request->hours);
+        // Convertir a entero explícitamente
+        $hours = (int) $request->hours;
         
+        // Reducir el tiempo
+        $newEndTime = Carbon::parse($product->auction_end_time)->subHours($hours);
+        
+        // No permitir reducir por debajo del tiempo actual
         if ($newEndTime < Carbon::now()) {
             return back()->with('error', '❌ No puedes reducir la subasta por debajo del tiempo actual');
         }
@@ -179,11 +190,12 @@ class AuctionController extends Controller
         $product->auction_end_time = $newEndTime;
         $product->save();
         
-        return back()->with('success', "✅ Subasta reducida {$request->hours} horas");
+        return redirect()->back()->with('success', "✅ Subasta reducida {$hours} horas");
     }
     
     public function resetAuctionTime(Request $request, $id)
     {
+        // Verificar que es admin
         if (!auth()->check() || !auth()->user()->is_admin) {
             abort(403, 'Acceso no autorizado');
         }
@@ -194,6 +206,7 @@ class AuctionController extends Controller
             return back()->with('error', 'Este producto no está en subasta');
         }
         
+        // Resetear a 24 horas desde ahora
         $product->auction_end_time = Carbon::now()->addHours(24);
         $product->save();
         
@@ -202,6 +215,7 @@ class AuctionController extends Controller
     
     public function forceEndAuction($id)
     {
+        // Verificar que es admin
         if (!auth()->check() || !auth()->user()->is_admin) {
             abort(403, 'Acceso no autorizado');
         }
@@ -219,3 +233,4 @@ class AuctionController extends Controller
         return back()->with('success', '✅ Subasta finalizada forzosamente');
     }
 }
+

@@ -8,6 +8,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\RaffleController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,9 +54,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 // Admin routes - Sorteos
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('raffles', App\Http\Controllers\Admin\RaffleController::class);
-    // Rutas adicionales para sorteos con nombres CORRECTOS
     Route::post('raffles/{raffle}/activate', [App\Http\Controllers\Admin\RaffleController::class, 'activate'])->name('raffles.activate');
     Route::post('raffles/{raffle}/draw', [App\Http\Controllers\Admin\RaffleController::class, 'drawWinner'])->name('raffles.draw');
+});
+
+// Admin routes - Pedidos
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
+    Route::post('orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 // Ruta para limpiar mensajes manualmente (solo admins)
@@ -73,13 +79,20 @@ Route::get('/admin/clean-messages', function() {
 // RUTAS DE SUBASTAS
 // ============================================
 Route::prefix('auctions')->name('auctions.')->group(function () {
+    // Rutas públicas
     Route::get('/', [AuctionController::class, 'index'])->name('index');
     Route::get('/{id}', [AuctionController::class, 'show'])->name('show');
+    
+    // Ruta para confirmar subasta
     Route::get('/confirm/{id}', [AuctionController::class, 'confirm'])->name('confirm')->middleware('auth');
+    
+    // Rutas para usuarios autenticados
     Route::post('/{id}/bid', [AuctionController::class, 'bid'])->name('bid')->middleware('auth');
     Route::post('/start/{id}', [AuctionController::class, 'start'])->name('start')->middleware('auth');
     Route::post('/cancel/{id}', [AuctionController::class, 'cancel'])->name('cancel')->middleware('auth');
     Route::post('/claim/{id}', [AuctionController::class, 'claimPrize'])->name('claim')->middleware('auth');
+    
+    // Rutas de administración de subastas (solo admins)
     Route::post('/{id}/extend', [AuctionController::class, 'extendAuction'])->name('extend')->middleware('auth');
     Route::post('/{id}/reduce', [AuctionController::class, 'reduceAuction'])->name('reduce')->middleware('auth');
     Route::post('/{id}/reset', [AuctionController::class, 'resetAuctionTime'])->name('reset')->middleware('auth');
@@ -127,8 +140,10 @@ Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function
 });
 
 // ============================================
-// RUTAS DE OFERTAS Y CONTACTO
+// RUTAS DE OFERTAS Y CONTACTO (CORREGIDAS)
 // ============================================
+
+// Ruta de ofertas
 Route::get('/ofertas', function () {
     $offers = App\Models\Product::where('original_price', '>', 0)
         ->whereColumn('price', '<', 'original_price')
@@ -138,7 +153,23 @@ Route::get('/ofertas', function () {
     return view('offers', compact('offers'));
 })->name('offers');
 
-Route::get('/contacto', function () {
+// Ruta de contacto - CORREGIDA para aceptar GET y POST
+Route::match(['get', 'post'], '/contacto', function () {
+    // Si es POST, procesamos el formulario
+    if (request()->isMethod('post')) {
+        $data = request()->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'message' => 'required|string|max:1000',
+        ]);
+        
+        // Aquí puedes enviar un email o guardar en BD
+        // Por ahora solo mostramos un mensaje de éxito
+        
+        return redirect()->back()->with('success', '¡Mensaje enviado correctamente! Te responderemos pronto.');
+    }
+    
+    // Si es GET, mostramos el formulario
     return view('contact');
 })->name('contact');
 
@@ -152,6 +183,13 @@ Route::post('/cart/remove/{id}', [OrderController::class, 'removeFromCart'])->na
 Route::post('/cart/clear', [OrderController::class, 'clearCart'])->name('cart.clear')->middleware('auth');
 Route::get('/checkout', [OrderController::class, 'checkoutForm'])->name('cart.checkout.form')->middleware('auth');
 Route::post('/checkout', [OrderController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
+
+// ============================================
+// RUTAS DE BÚSQUEDA
+// ============================================
+Route::get('/buscar', [App\Http\Controllers\SearchController::class, 'search'])->name('search');
+Route::get('/buscar/sugerencias', [App\Http\Controllers\SearchController::class, 'suggestions'])->name('search.suggestions');
+
 
 // ============================================
 // RUTAS DE PEDIDOS

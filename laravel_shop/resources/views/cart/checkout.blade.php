@@ -12,12 +12,13 @@
                         <form action="{{ route('cart.checkout') }}" method="POST" id="checkout-form">
                             @csrf
                             
-                            <div class="space-y-4 mb-6">
+                            <div class="space-y-4 mb-6" id="address-list">
                                 @foreach($addresses as $address)
-                                    <label class="block">
+                                    <label class="block address-item">
                                         <input type="radio" name="address_id" value="{{ $address->id }}" 
+                                               data-province="{{ $address->state }}"
                                                {{ $address->is_default ? 'checked' : '' }} required
-                                               class="hidden peer">
+                                               class="hidden peer address-radio">
                                         <div class="border border-gray-800 rounded-lg p-4 cursor-pointer peer-checked:border-neon-purple peer-checked:bg-neon-purple/10 transition">
                                             <div class="flex justify-between items-start">
                                                 <div>
@@ -45,28 +46,42 @@
                                 </a>
                             </div>
 
-                            <!-- Resumen del pedido -->
+                            <!-- Resumen del pedido con impuestos dinámicos -->
                             <div class="border-t border-gray-800 pt-6">
                                 <h2 class="text-2xl font-bold text-white mb-4">2. Resumen del pedido</h2>
                                 
-                                <div class="space-y-3 mb-6">
+                                <div class="space-y-3 mb-6" id="cart-items">
                                     @foreach($cart as $id => $item)
-                                        <div class="flex justify-between text-sm">
+                                        @php
+                                            $itemTotal = $item['price'] * $item['quantity'];
+                                        @endphp
+                                        <div class="flex justify-between text-sm cart-item" data-price="{{ $item['price'] }}" data-quantity="{{ $item['quantity'] }}">
                                             <span class="text-gray-400">{{ $item['name'] }} x{{ $item['quantity'] }}</span>
-                                            <span class="text-white">{{ number_format($item['price'] * $item['quantity'], 2) }}€</span>
+                                            <span class="text-white item-subtotal">{{ number_format($itemTotal, 2) }}€</span>
                                         </div>
                                     @endforeach
                                 </div>
 
-                                <div class="border-t border-gray-800 pt-4">
-                                    <div class="flex justify-between text-lg font-bold">
-                                        <span class="text-white">Total</span>
-                                        <span class="text-neon-blue">{{ number_format($total, 2) }}€</span>
+                                <!-- Desglose de impuestos (se actualizará con JavaScript) -->
+                                <div id="tax-summary" class="bg-gray-800/50 rounded-lg p-4 mb-4">
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-400">Subtotal:</span>
+                                        <span class="text-white subtotal-amount">{{ number_format($subtotal, 2) }}€</span>
+                                    </div>
+                                    <div id="tax-details">
+                                        <div class="flex justify-between text-sm mb-2 tax-line">
+                                            <span class="text-gray-400 tax-name">Selecciona una dirección</span>
+                                            <span class="text-white tax-amount">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-700">
+                                        <span class="text-white">Total:</span>
+                                        <span class="text-neon-blue total-amount">{{ number_format($subtotal, 2) }}€</span>
                                     </div>
                                 </div>
 
-                                <button type="submit" class="w-full mt-6 px-6 py-4 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition">
-                                    Confirmar pedido
+                                <button type="submit" class="w-full mt-6 px-6 py-4 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(0,210,255,0.4)]">
+                                    ✅ Confirmar pedido
                                 </button>
                             </div>
                         </form>
@@ -100,7 +115,13 @@
                             <svg class="w-5 h-5 text-neon-blue mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                             </svg>
-                            <span>Pago seguro con tarjeta de crédito/débito</span>
+                            <span><strong>Península:</strong> IVA 21%</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <svg class="w-5 h-5 text-neon-blue mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
+                            <span><strong>Canarias (GC/TF):</strong> IGIC 7%</span>
                         </li>
                     </ul>
 
@@ -114,4 +135,56 @@
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addressRadios = document.querySelectorAll('.address-radio');
+        const subtotal = {{ $subtotal }};
+        
+        function calculateTax(province) {
+            // Determinar si es Canarias buscando "GC" o "TF" en la provincia
+            const provinceUpper = province ? province.toUpperCase() : '';
+            let isCanarias = provinceUpper.includes('GC') || provinceUpper.includes('TF');
+            
+            const taxRate = isCanarias ? 7 : 21;
+            const taxName = isCanarias ? 'IGIC 7%' : 'IVA 21%';
+            const taxAmount = subtotal * (taxRate / 100);
+            const total = subtotal + taxAmount;
+            
+            return { taxRate, taxName, taxAmount, total, isCanarias };
+        }
+        
+        function updateTaxSummary(province) {
+            const taxSummary = calculateTax(province);
+            const taxDetails = document.getElementById('tax-details');
+            
+            let taxLine = document.querySelector('.tax-line');
+            if (!taxLine) {
+                taxLine = document.createElement('div');
+                taxLine.className = 'flex justify-between text-sm mb-2 tax-line';
+                taxDetails.appendChild(taxLine);
+            }
+            
+            taxLine.innerHTML = `
+                <span class="text-gray-400 tax-name">${taxSummary.taxName}:</span>
+                <span class="text-white tax-amount">${taxSummary.taxAmount.toFixed(2)}€</span>
+            `;
+            
+            document.querySelector('.total-amount').textContent = taxSummary.total.toFixed(2) + '€';
+        }
+        
+        // Escuchar cambios en las direcciones
+        addressRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const province = this.dataset.province;
+                updateTaxSummary(province);
+            });
+            
+            // Si es la seleccionada por defecto, actualizar
+            if (radio.checked) {
+                updateTaxSummary(radio.dataset.province);
+            }
+        });
+    });
+    </script>
 </x-store-layout>

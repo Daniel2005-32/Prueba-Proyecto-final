@@ -55,10 +55,24 @@
                     @endforeach
                 </div>
 
-                <!-- Total -->
-                <div class="mt-6 pt-6 border-t border-gray-800 flex justify-between items-center">
-                    <span class="text-xl text-white font-bold">Total</span>
-                    <span class="text-2xl text-neon-purple font-black">{{ number_format($order->total, 2) }}€</span>
+                <!-- Total base (sin impuestos) -->
+                <div class="mt-6 pt-6 border-t border-gray-800">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl text-white font-bold">Total del pedido</span>
+                        <span class="text-2xl text-neon-purple font-black">{{ number_format($order->total, 2) }}€</span>
+                    </div>
+                    
+                    <!-- Información de impuestos (solo texto, sin cálculo visible) -->
+                    @if($order->address)
+                        @php
+                            $province = $order->address->state;
+                            $taxRate = App\Helpers\PriceHelper::getTaxRate($province);
+                            $taxName = $taxRate == 7 ? 'IGIC' : 'IVA';
+                        @endphp
+                        <p class="text-xs text-gray-500 text-right mt-2">
+                            * {{ $taxName }} {{ $taxRate }}% aplicado (según dirección de envío)
+                        </p>
+                    @endif
                 </div>
             </div>
 
@@ -86,20 +100,16 @@
                             </p>
                         @endif
                         <p class="flex items-start gap-2">
-                            <span class="text-neon-blue min-w-[80px]">Barrio:</span>
-                            {{ $order->address->neighborhood }}
-                        </p>
-                        <p class="flex items-start gap-2">
                             <span class="text-neon-blue min-w-[80px]">Ciudad:</span>
                             {{ $order->address->city }} - {{ $order->address->state }}
                         </p>
                         <p class="flex items-start gap-2">
-                            <span class="text-neon-blue min-w-[80px]">CEP:</span>
+                            <span class="text-neon-blue min-w-[80px]">Código Postal:</span>
                             {{ $order->address->zipcode }}
                         </p>
                         <p class="flex items-start gap-2">
                             <span class="text-neon-blue min-w-[80px]">Teléfono:</span>
-                            {{ $order->address->formatted_phone }}
+                            {{ $order->address->phone }}
                         </p>
                     </div>
                 @else
@@ -130,7 +140,7 @@
                 </div>
             </div>
 
-            <!-- Botón para volver a comprar (opcional) -->
+            <!-- Botón para volver a comprar -->
             <div class="mt-8 text-center">
                 <a href="{{ route('products.index') }}" class="inline-flex items-center text-gray-400 hover:text-neon-blue transition">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

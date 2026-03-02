@@ -42,7 +42,7 @@
         </a>
         <p class="text-gray-500 text-sm mb-4 line-clamp-2"><?php echo e($product->description); ?></p>
         
-        <!-- Precios y botón -->
+        <!-- Precios SIN IVA -->
         <div class="flex justify-between items-center">
             <div>
                 <?php if($product->isAuctionActive()): ?>
@@ -58,7 +58,6 @@
             
             <?php if(auth()->guard()->check()): ?>
                 <?php if(Auth::user()->isBanned()): ?>
-                    <!-- Usuario baneado - no puede hacer nada -->
                     <div class="p-2 bg-gray-700 rounded-lg cursor-not-allowed opacity-50" title="No puedes realizar acciones mientras estás baneado">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>

@@ -5,9 +5,9 @@
             
             @php
                 $cart = session('cart', []);
-                $total = 0;
+                $subtotal = 0;
                 foreach($cart as $id => $item) {
-                    $total += $item['price'] * $item['quantity'];
+                    $subtotal += $item['price'] * $item['quantity'];
                 }
             @endphp
 
@@ -43,6 +43,7 @@
                                         @php
                                             $product = \App\Models\Product::find($id);
                                             $maxStock = $product ? $product->stock : 0;
+                                            $subtotalProducto = $item['price'] * $item['quantity'];
                                         @endphp
                                         <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
                                             <td class="px-6 py-4">
@@ -68,7 +69,7 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td class="px-6 py-4 text-white font-bold">{{ number_format($item['price'] * $item['quantity'], 2) }}€</td>
+                                            <td class="px-6 py-4 text-white font-bold">{{ number_format($subtotalProducto, 2) }}€</td>
                                             <td class="px-6 py-4">
                                                 <form action="{{ route('cart.remove', $id) }}" method="POST">
                                                     @csrf
@@ -86,7 +87,7 @@
                         </div>
                     </div>
 
-                    <!-- Resumen del pedido -->
+                    <!-- Resumen del pedido (sin IVA) -->
                     <div class="lg:col-span-1">
                         <div class="bg-gamer-card rounded-2xl border border-neon-purple/20 p-6 sticky top-24">
                             <h2 class="text-2xl font-bold text-white mb-6">Resumen del pedido</h2>
@@ -94,7 +95,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between text-gray-300">
                                     <span>Subtotal:</span>
-                                    <span>{{ number_format($total, 2) }}€</span>
+                                    <span>{{ number_format($subtotal, 2) }}€</span>
                                 </div>
                                 <div class="flex justify-between text-gray-300">
                                     <span>Envío:</span>
@@ -102,9 +103,12 @@
                                 </div>
                                 <div class="border-t border-gray-800 my-4"></div>
                                 <div class="flex justify-between text-xl font-bold text-white">
-                                    <span>Total:</span>
-                                    <span class="text-neon-blue">{{ number_format($total, 2) }}€</span>
+                                    <span>Total (sin impuestos):</span>
+                                    <span class="text-neon-blue">{{ number_format($subtotal, 2) }}€</span>
                                 </div>
+                                <p class="text-xs text-gray-500 text-right">
+                                    * Los impuestos se calcularán al seleccionar tu dirección
+                                </p>
                             </div>
 
                             @auth

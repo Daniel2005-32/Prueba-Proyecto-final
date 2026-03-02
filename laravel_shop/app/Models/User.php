@@ -78,7 +78,6 @@ class User extends Authenticatable
             $data['is_permanent'] = true;
             $data['banned_until'] = null;
         } elseif (is_numeric($duration)) {
-            // Convertir a entero explícitamente
             $hours = (int) $duration;
             $data['banned_until'] = Carbon::now()->addHours($hours);
         }

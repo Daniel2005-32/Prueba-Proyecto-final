@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:products|max:255',
+            'slug' => 'required|string|unique:products,slug|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
@@ -47,17 +47,17 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
-        
-        // Manejar checkboxes
+
+        // Manejar checkboxes (si no vienen, son false)
         $data['featured'] = $request->has('featured') ? true : false;
         $data['trending'] = $request->has('trending') ? true : false;
         $data['is_exclusive'] = $request->has('is_exclusive') ? true : false;
-        
+
         // Manejar oferta
-        $data['original_price'] = null;
         if ($request->has('on_sale') && $request->on_sale) {
             $data['original_price'] = $request->original_price;
-            // El precio de oferta ya viene en 'price'
+        } else {
+            $data['original_price'] = null;
         }
 
         Product::create($data);
@@ -80,19 +80,29 @@ class ProductController extends Controller
             abort(403, 'Acceso no autorizado');
         }
 
+        // Validación SIMPLE - sin restricciones de unicidad en el slug
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'slug' => 'required|string|max:255', // Solo requerido, no único
         ]);
 
-        $data = $request->all();
-        
+        $data = [
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'image' => $request->image,
+        ];
+
         // Manejar checkboxes
         $data['featured'] = $request->has('featured') ? true : false;
         $data['trending'] = $request->has('trending') ? true : false;
         $data['is_exclusive'] = $request->has('is_exclusive') ? true : false;
-        
+
         // Manejar oferta
         if ($request->has('on_sale') && $request->on_sale) {
             $data['original_price'] = $request->original_price;

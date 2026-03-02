@@ -18,11 +18,6 @@
         .neon-text-blue { text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff; }
         .neon-text-purple { text-shadow: 0 0 5px #9d00ff, 0 0 10px #9d00ff; }
         .neon-text-red { text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055; }
-        
-        /* Transiciones suaves para las imágenes */
-        .fade-image {
-            transition: opacity 2s ease-in-out;
-        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gamer-dark text-gray-100">
@@ -31,8 +26,8 @@
         <header class="sticky top-0 z-50 bg-gamer-dark/90 backdrop-blur-sm border-b border-neon-purple/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-20">
-                    <!-- Logo -->
-                    <div class="flex-shrink-0 flex items-center">
+                    <!-- Logo (con más separación) -->
+                    <div class="flex-shrink-0 flex items-center mr-8 lg:mr-12">
                         <a href="<?php echo e(route('home')); ?>" class="flex items-center group">
                             <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Gamer Guild Logo" class="h-16 w-auto transition-transform group-hover:scale-110">
                             <span class="ml-3 text-2xl font-black tracking-tighter text-white group-hover:text-neon-blue transition">
@@ -41,16 +36,42 @@
                         </a>
                     </div>
 
-                    <!-- Menú con categorías -->
-                    <nav class="hidden md:flex space-x-6 items-center">
-                        <a href="<?php echo e(route('products.category', 'consolas')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/consolas') ? 'text-neon-blue' : ''); ?>">Consolas</a>
-                        <a href="<?php echo e(route('products.category', 'videojuegos')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/videojuegos') ? 'text-neon-blue' : ''); ?>">Videojuegos</a>
-                        <a href="<?php echo e(route('products.category', 'manga')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/manga') ? 'text-neon-blue' : ''); ?>">Manga</a>
-                        <a href="<?php echo e(route('products.category', 'productos-anime')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/productos-anime') ? 'text-neon-blue' : ''); ?>">Productos Anime</a>
-                        <a href="<?php echo e(route('products.category', 'cosplay')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->is('products/category/cosplay') ? 'text-neon-blue' : ''); ?>">Cosplay</a>
-                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">Ofertas</a>
-                        <a href="<?php echo e(route('raffles.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('raffles.*') ? 'text-neon-purple' : ''); ?>">Sorteos</a>
+                    <!-- MENÚ SIMPLIFICADO (con más espacio del logo) -->
+                    <nav class="hidden md:flex space-x-8 items-center ml-4">
+                        <a href="<?php echo e(route('products.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.*') && !request()->routeIs('products.category*') ? 'text-neon-blue' : ''); ?>">
+                            Catálogo
+                        </a>
+                        <a href="<?php echo e(route('auctions.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('auctions.*') ? 'text-neon-purple' : ''); ?>">
+                            Subastas
+                        </a>
+                        <a href="<?php echo e(route('raffles.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('raffles.*') ? 'text-neon-purple' : ''); ?>">
+                            Sorteos
+                        </a>
+                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">
+                            Ofertas
+                        </a>
                     </nav>
+
+                    <!-- BARRA DE BÚSQUEDA GRANDE -->
+                    <div class="flex-1 max-w-2xl mx-8">
+                        <form action="<?php echo e(route('search')); ?>" method="GET" class="relative" id="search-form">
+                            <input type="text" 
+                                   name="q" 
+                                   id="search-input"
+                                   placeholder="Buscar productos, consolas, manga, anime..." 
+                                   value="<?php echo e(request('q')); ?>"
+                                   class="w-full bg-gray-800 border border-gray-700 rounded-full pl-6 pr-14 py-3 text-white focus:outline-none focus:border-neon-blue transition text-base"
+                                   autocomplete="off">
+                            <button type="submit" class="absolute right-4 top-3 text-gray-400 hover:text-neon-blue transition">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                            
+                            <!-- Sugerencias de búsqueda -->
+                            <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-1 bg-gamer-card border border-neon-blue/20 rounded-lg shadow-xl hidden"></div>
+                        </form>
+                    </div>
 
                     <!-- Acciones -->
                     <div class="flex items-center space-x-4">
@@ -100,6 +121,7 @@
                                         <a href="<?php echo e(route('admin.users.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">👥 Usuarios</a>
                                         <a href="<?php echo e(route('admin.bans.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🚫 Baneos</a>
                                         <a href="<?php echo e(route('admin.raffles.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🎲 Sorteos</a>
+                                        <a href="<?php echo e(route('admin.orders.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">📦 Pedidos</a>
                                     <?php endif; ?>
                                     
                                     <div class="border-t border-gray-800 my-1"></div>
@@ -153,26 +175,22 @@
 
         <!-- CONTENEDOR PRINCIPAL CON IMÁGENES LATERALES ROTATIVAS -->
         <div class="relative flex-grow">
-            <!-- FONDO IZQUIERDO - Imágenes rotativas con fade suave -->
+            <!-- FONDO IZQUIERDO -->
             <div class="fixed left-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden">
-                <div class="relative w-full h-full">
-                    <img id="leftImage" 
-                         src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1887&auto=format&fit=crop" 
-                         alt="Anime Collection" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-30 fade-image">
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gamer-dark"></div>
-                </div>
+                <img id="leftImage" 
+                     src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1887&auto=format&fit=crop" 
+                     alt="Anime Collection" 
+                     class="w-full h-full object-cover opacity-30 transition-opacity duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gamer-dark"></div>
             </div>
 
-            <!-- FONDO DERECHO - Imágenes rotativas con fade suave -->
+            <!-- FONDO DERECHO -->
             <div class="fixed right-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden">
-                <div class="relative w-full h-full">
-                    <img id="rightImage" 
-                         src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
-                         alt="Gaming Setup" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-30 fade-image">
-                    <div class="absolute inset-0 bg-gradient-to-l from-transparent to-gamer-dark"></div>
-                </div>
+                <img id="rightImage" 
+                     src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Gaming Setup" 
+                     class="w-full h-full object-cover opacity-30 transition-opacity duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-l from-transparent to-gamer-dark"></div>
             </div>
 
             <!-- CONTENIDO CENTRAL -->
@@ -216,7 +234,7 @@
     <?php endif; ?>
 
     <script>
-        // Array de imágenes para el lado izquierdo (Anime/Figuras)
+        // Array de imágenes para rotación
         const leftImages = [
             'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1887&auto=format&fit=crop',
             'https://i.pinimg.com/736x/bc/a3/80/bca380011a5a682a9e7766c1d7c2db82.jpg',
@@ -224,7 +242,6 @@
             'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1887&auto=format&fit=crop'
         ];
 
-        // Array de imágenes para el lado derecho (Videojuegos)
         const rightImages = [
             'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop',
             'https://periodismo.ull.es/wp-content/uploads/2022/04/Se-rumorea-que-Elden-Ring-realizara-proximamente-una-nueva-prueba.jpg',
@@ -234,54 +251,72 @@
 
         let leftIndex = 0;
         let rightIndex = 0;
-        let leftTimeout, rightTimeout;
 
-        function changeImage(side) {
-            if (side === 'left') {
-                const leftImg = document.getElementById('leftImage');
-                leftIndex = (leftIndex + 1) % leftImages.length;
-                
-                // Fade out
-                leftImg.style.opacity = '0';
-                
-                // Cambiar imagen y fade in después de 1 segundo
-                setTimeout(() => {
-                    leftImg.src = leftImages[leftIndex];
-                    leftImg.style.opacity = '0.3';
-                }, 1000);
-                
-                // Programar siguiente cambio
-                leftTimeout = setTimeout(() => changeImage('left'), 7000);
-                
-            } else if (side === 'right') {
-                const rightImg = document.getElementById('rightImage');
-                rightIndex = (rightIndex + 1) % rightImages.length;
-                
-                // Fade out
-                rightImg.style.opacity = '0';
-                
-                // Cambiar imagen y fade in después de 1 segundo
-                setTimeout(() => {
-                    rightImg.src = rightImages[rightIndex];
-                    rightImg.style.opacity = '0.3';
-                }, 1000);
-                
-                // Programar siguiente cambio
-                rightTimeout = setTimeout(() => changeImage('right'), 7000);
-            }
+        function rotateImages() {
+            const leftImg = document.getElementById('leftImage');
+            leftIndex = (leftIndex + 1) % leftImages.length;
+            leftImg.style.opacity = '0.2';
+            setTimeout(() => {
+                leftImg.src = leftImages[leftIndex];
+                leftImg.style.opacity = '0.3';
+            }, 500);
+
+            const rightImg = document.getElementById('rightImage');
+            rightIndex = (rightIndex + 1) % rightImages.length;
+            rightImg.style.opacity = '0.2';
+            setTimeout(() => {
+                rightImg.src = rightImages[rightIndex];
+                rightImg.style.opacity = '0.3';
+            }, 500);
         }
 
-        // Iniciar rotación después de 7 segundos
-        setTimeout(() => {
-            changeImage('left');
-            changeImage('right');
-        }, 7000);
+        setInterval(rotateImages, 7000);
 
-        // Limpiar timeouts si es necesario (opcional)
-        window.addEventListener('beforeunload', function() {
-            if (leftTimeout) clearTimeout(leftTimeout);
-            if (rightTimeout) clearTimeout(rightTimeout);
-        });
+        // SUGERENCIAS DE BÚSQUEDA - CORREGIDO
+        const searchInput = document.getElementById('search-input');
+        const suggestionsDiv = document.getElementById('search-suggestions');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                if (query.length < 2) {
+                    suggestionsDiv.classList.add('hidden');
+                    return;
+                }
+
+                fetch(`/buscar/sugerencias?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html = '';
+                            data.forEach(product => {
+                                const priceWithIva = (product.price * 1.21).toFixed(2);
+                                html += `
+                                    <a href="/products/${product.slug}" class="flex items-center p-3 hover:bg-gray-800 transition border-b border-gray-800 last:border-0">
+                                        <img src="${product.image}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
+                                        <div class="ml-3 flex-1">
+                                            <div class="text-white text-sm font-medium">${product.name}</div>
+                                            <div class="text-neon-blue text-xs">${priceWithIva}€</div>
+                                        </div>
+                                    </a>
+                                `;
+                            });
+                            suggestionsDiv.innerHTML = html;
+                            suggestionsDiv.classList.remove('hidden');
+                        } else {
+                            suggestionsDiv.innerHTML = '<div class="p-3 text-gray-400 text-sm">No hay sugerencias</div>';
+                            suggestionsDiv.classList.remove('hidden');
+                        }
+                    });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    suggestionsDiv.classList.add('hidden');
+                }
+            });
+        }
     </script>
 
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
