@@ -14,7 +14,8 @@ class Product extends Model
         'name', 'slug', 'description', 'price', 'original_price',
         'stock', 'category_id', 'image', 'featured', 'trending',
         'is_exclusive', 'is_in_auction', 'auction_end_time',
-        'auction_winner_id', 'auction_claimed', 'auction_cancelled'
+        'auction_winner_id', 'auction_claimed', 'auction_cancelled',
+        'auction_final_price'
     ];
 
     protected $casts = [
@@ -26,7 +27,8 @@ class Product extends Model
         'auction_cancelled' => 'boolean',
         'auction_end_time' => 'datetime',
         'price' => 'decimal:2',
-        'original_price' => 'decimal:2'
+        'original_price' => 'decimal:2',
+        'auction_final_price' => 'decimal:2'
     ];
 
     public function category()
@@ -92,13 +94,16 @@ class Product extends Model
             return false;
         }
 
+        // Guardar el precio original ANTES de aplicar el descuento
         $this->original_price = $this->price;
+        // Aplicar 20% de descuento para el inicio de la subasta
         $this->price = $this->price * 0.8;
         $this->is_in_auction = true;
         $this->auction_end_time = Carbon::now()->addHours(24);
         $this->auction_winner_id = null;
         $this->auction_claimed = false;
         $this->auction_cancelled = false;
+        $this->auction_final_price = null;
         
         return $this->save();
     }
@@ -165,18 +170,30 @@ class Product extends Model
     }
 
     /**
-     * Finalizar subasta y marcar como vendido/agotado
+     * Finalizar subasta - VERSIÓN SIMPLE Y DIRECTA
+     * SIEMPRE restauramos el precio original cuando termina la subasta
      */
     public function endAuctionAndRemoveFromCatalog()
     {
+        // Guardar el precio final de la subasta ANTES de restaurar
+        $finalPrice = $this->price;
+        
+        // RESTAURAR EL PRECIO ORIGINAL SIEMPRE
+        if ($this->original_price) {
+            $this->price = $this->original_price;
+        }
+        
         if ($this->auction_winner_id) {
-            $this->stock = 0;
+            // Hay ganador - guardamos el precio final
+            $this->auction_final_price = $finalPrice;
+            $this->stock = 0; // Producto vendido
         } else {
-            $this->price = $this->original_price ?? $this->price;
-            $this->original_price = null;
+            // No hay ganador - solo restaurar precio
             $this->stock = 1;
         }
         
+        // Limpiar campos de subasta
+        $this->original_price = null;
         $this->is_in_auction = false;
         $this->auction_end_time = null;
         
@@ -184,7 +201,7 @@ class Product extends Model
     }
 
     /**
-     * Cancelar subasta (admin) - CORREGIDO
+     * Cancelar subasta (admin)
      */
     public function cancelAuction()
     {
@@ -192,13 +209,14 @@ class Product extends Model
         $this->auction_cancelled = true;
         $this->auction_end_time = null;
         
-        // Si hay precio original, restaurarlo; si no, mantener el precio actual
+        // Restauramos el precio original
         if ($this->original_price) {
             $this->price = $this->original_price;
             $this->original_price = null;
         }
         
         $this->stock = 1;
+        $this->auction_final_price = null;
         
         return $this->save();
     }

@@ -37,7 +37,12 @@
                             <div class="mt-8">
                                 <h2 class="text-xl font-bold text-white mb-4">📊 Puja actual</h2>
                                 <div class="bg-gray-800/50 rounded-lg p-6 text-center">
-                                    <p class="text-4xl font-black text-neon-purple">{{ number_format($product->price, 2) }}€</p>
+                                    @if($product->auction_final_price)
+                                        <p class="text-4xl font-black text-neon-purple">{{ number_format($product->auction_final_price, 2) }}€</p>
+                                        <p class="text-gray-400 text-sm mt-1">Precio final de subasta</p>
+                                    @else
+                                        <p class="text-4xl font-black text-neon-purple">{{ number_format($product->price, 2) }}€</p>
+                                    @endif
                                     <p class="text-gray-400 mt-2">Mejor postor: {{ $product->auctionWinner->name ?? 'Nadie aún' }}</p>
                                 </div>
                             </div>
@@ -82,23 +87,24 @@
                                     </a>
                                 </div>
                             @endauth
-                        @elseif($product->isAuctionEnded())
+                        @elseif($product->isAuctionEnded() || $product->auction_final_price)
                             <div class="text-center py-8">
                                 @if($product->auction_winner_id == Auth::id())
                                     <div class="bg-green-900/30 border border-green-500 rounded-lg p-6">
                                         <p class="text-green-400 text-lg font-bold mb-2">🎉 ¡FELICIDADES!</p>
                                         <p class="text-white mb-4">Has ganado esta subasta</p>
-                                        <p class="text-neon-purple text-2xl font-bold">{{ number_format($product->price, 2) }}€</p>
+                                        <p class="text-neon-purple text-2xl font-bold">{{ number_format($product->auction_final_price, 2) }}€</p>
                                     </div>
                                 @elseif($product->auction_winner_id)
                                     <div class="bg-gray-800/50 rounded-lg p-6">
                                         <p class="text-gray-400">Subasta finalizada</p>
                                         <p class="text-neon-purple font-bold mt-2">Ganador: {{ $product->auctionWinner->name }}</p>
-                                        <p class="text-neon-purple mt-2">{{ number_format($product->price, 2) }}€</p>
+                                        <p class="text-neon-purple mt-2">{{ number_format($product->auction_final_price, 2) }}€</p>
                                     </div>
                                 @else
                                     <div class="bg-gray-800/50 rounded-lg p-6">
                                         <p class="text-gray-400">Subasta finalizada sin pujas</p>
+                                        <p class="text-sm text-gray-500 mt-2">El producto vuelve a su precio original</p>
                                     </div>
                                 @endif
                             </div>
