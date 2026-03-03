@@ -91,26 +91,22 @@ class OrderController extends Controller
                     return $item['price'] * $item['quantity'];
                 }, $cart));
                 
-                if ($request->wantsJson()) {
-                    return response()->json([
-                        'success' => true,
-                        'subtotal' => number_format($subtotal, 2),
-                    ]);
-                }
-                
-                return redirect()->route('cart.index')->with('success', 'Carrito actualizado');
+                return response()->json([
+                    'success' => true,
+                    'subtotal' => number_format($subtotal, 2)
+                ]);
             } else {
-                if ($request->wantsJson()) {
-                    return response()->json([
-                        'success' => false,
-                        'error' => 'Stock insuficiente'
-                    ], 400);
-                }
-                return redirect()->route('cart.index')->with('error', 'Stock insuficiente. Máximo ' . ($product ? $product->stock : 0) . ' unidades');
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Stock insuficiente. Máximo ' . ($product ? $product->stock : 0) . ' unidades'
+                ], 400);
             }
         }
         
-        return redirect()->route('cart.index')->with('error', 'Producto no encontrado en el carrito');
+        return response()->json([
+            'success' => false,
+            'error' => 'Producto no encontrado en el carrito'
+        ], 404);
     }
 
     public function removeFromCart($id)
@@ -174,15 +170,8 @@ class OrderController extends Controller
             return redirect()->route('login');
         }
 
-        // Validar dirección
         $request->validate([
             'address_id' => 'required|exists:addresses,id'
-        ]);
-
-        // Validar datos de tarjeta (simulación)
-        $request->validate([
-            'card_last_four' => 'required|string|size:4',
-            'card_brand' => 'required|string|max:20',
         ]);
 
         $address = Address::find($request->address_id);
@@ -207,17 +196,13 @@ class OrderController extends Controller
             return $item['price'] * $item['quantity'];
         }, $cart));
 
-        // Crear el pedido con los datos de tarjeta
-        $orderData = [
+        // Crear el pedido
+        $order = Order::create([
             'user_id' => auth()->id(),
             'address_id' => $request->address_id,
             'total' => $subtotal,
-            'status' => 'pending',
-            'card_last_four' => $request->card_last_four,
-            'card_brand' => $request->card_brand
-        ];
-
-        $order = Order::create($orderData);
+            'status' => 'pending'
+        ]);
 
         foreach ($cart as $productId => $item) {
             $product = Product::find($productId);
@@ -239,7 +224,7 @@ class OrderController extends Controller
 
         Session::forget('cart');
         
-        return redirect()->route('orders.show', $order)->with('success', '✅ Pedido realizado correctamente. Pago procesado.');
+        return redirect()->route('orders.show', $order)->with('success', 'Pedido realizado correctamente');
     }
 
     public function show(Order $order)

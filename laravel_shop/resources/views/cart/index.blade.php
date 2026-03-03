@@ -38,40 +38,50 @@
                                         <th class="px-6 py-4 text-left text-neon-blue">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="cart-items">
                                     @foreach($cart as $id => $item)
                                         @php
                                             $product = \App\Models\Product::find($id);
                                             $maxStock = $product ? $product->stock : 0;
-                                            $subtotalProducto = $item['price'] * $item['quantity'];
+                                            $itemTotal = $item['price'] * $item['quantity'];
                                         @endphp
-                                        <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
+                                        <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition" data-id="{{ $id }}" data-price="{{ $item['price'] }}">
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center space-x-3">
                                                     <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-12 h-12 object-cover rounded">
                                                     <span class="text-white font-medium">{{ $item['name'] }}</span>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 text-gray-300">{{ number_format($item['price'], 2) }}€</td>
+                                            <td class="px-6 py-4 text-gray-300 price-cell">{{ number_format($item['price'], 2) }}€</td>
                                             <td class="px-6 py-4">
-                                                <form action="{{ route('cart.update', $id) }}" method="POST" class="flex items-center space-x-2">
-                                                    @csrf
+                                                <div class="flex items-center space-x-2">
+                                                    <button onclick="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" 
+                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition"
+                                                            {{ $item['quantity'] <= 1 ? 'disabled' : '' }}>
+                                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                                        </svg>
+                                                    </button>
+                                                    
                                                     <input type="number" 
-                                                           name="quantity" 
                                                            value="{{ $item['quantity'] }}" 
                                                            min="1" 
                                                            max="{{ $maxStock }}"
-                                                           class="w-16 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white focus:outline-none focus:border-neon-blue">
-                                                    <button type="submit" class="text-neon-blue hover:text-neon-blue/80 transition" title="Actualizar">
-                                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                                           class="w-16 bg-gray-800 border border-gray-700 rounded-lg px-2 py-1 text-white text-center quantity-input"
+                                                           onchange="updateQuantity({{ $id }}, this.value)">
+                                                    
+                                                    <button onclick="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" 
+                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition"
+                                                            {{ $item['quantity'] >= $maxStock ? 'disabled' : '' }}>
+                                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                                         </svg>
                                                     </button>
-                                                </form>
+                                                </div>
                                             </td>
-                                            <td class="px-6 py-4 text-white font-bold">{{ number_format($subtotalProducto, 2) }}€</td>
+                                            <td class="px-6 py-4 text-white font-bold item-total">{{ number_format($itemTotal, 2) }}€</td>
                                             <td class="px-6 py-4">
-                                                <form action="{{ route('cart.remove', $id) }}" method="POST">
+                                                <form action="{{ route('cart.remove', $id) }}" method="POST" class="inline">
                                                     @csrf
                                                     <button type="submit" class="text-neon-red hover:text-neon-red/80 transition" title="Eliminar">
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +97,7 @@
                         </div>
                     </div>
 
-                    <!-- Resumen del pedido (sin IVA) -->
+                    <!-- Resumen del pedido -->
                     <div class="lg:col-span-1">
                         <div class="bg-gamer-card rounded-2xl border border-neon-purple/20 p-6 sticky top-24">
                             <h2 class="text-2xl font-bold text-white mb-6">Resumen del pedido</h2>
@@ -95,7 +105,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between text-gray-300">
                                     <span>Subtotal:</span>
-                                    <span>{{ number_format($subtotal, 2) }}€</span>
+                                    <span id="cart-subtotal">{{ number_format($subtotal, 2) }}€</span>
                                 </div>
                                 <div class="flex justify-between text-gray-300">
                                     <span>Envío:</span>
@@ -103,8 +113,8 @@
                                 </div>
                                 <div class="border-t border-gray-800 my-4"></div>
                                 <div class="flex justify-between text-xl font-bold text-white">
-                                    <span>Total (sin impuestos):</span>
-                                    <span class="text-neon-blue">{{ number_format($subtotal, 2) }}€</span>
+                                    <span>Total:</span>
+                                    <span id="cart-total">{{ number_format($subtotal, 2) }}€</span>
                                 </div>
                                 <p class="text-xs text-gray-500 text-right">
                                     * Los impuestos se calcularán al seleccionar tu dirección
@@ -141,4 +151,76 @@
             @endif
         </div>
     </div>
+
+    <script>
+    function updateQuantity(productId, newQuantity) {
+        // Validar que la cantidad sea válida
+        newQuantity = parseInt(newQuantity);
+        if (isNaN(newQuantity) || newQuantity < 1) return;
+        
+        // Obtener el stock máximo
+        const row = document.querySelector(`tr[data-id="${productId}"]`);
+        if (!row) return;
+        
+        const maxStock = parseInt(row.querySelector('.quantity-input').getAttribute('max'));
+        if (newQuantity > maxStock) {
+            alert('No hay suficiente stock');
+            return;
+        }
+        
+        // Enviar petición AJAX
+        fetch(`/cart/update/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ quantity: newQuantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar la cantidad en el input
+                row.querySelector('.quantity-input').value = newQuantity;
+                
+                // Actualizar el total del item
+                const price = parseFloat(row.dataset.price);
+                const itemTotal = price * newQuantity;
+                row.querySelector('.item-total').textContent = itemTotal.toFixed(2) + '€';
+                
+                // Actualizar subtotal y total global
+                document.getElementById('cart-subtotal').textContent = data.subtotal + '€';
+                document.getElementById('cart-total').textContent = data.subtotal + '€';
+                
+                // Habilitar/deshabilitar botones según nueva cantidad
+                updateButtons(productId, newQuantity, maxStock);
+            } else {
+                alert(data.error || 'Error al actualizar la cantidad');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al actualizar el carrito');
+        });
+    }
+    
+    function updateButtons(productId, quantity, maxStock) {
+        const row = document.querySelector(`tr[data-id="${productId}"]`);
+        const buttons = row.querySelectorAll('button');
+        
+        // Botón de restar (primer botón)
+        if (quantity <= 1) {
+            buttons[0].setAttribute('disabled', 'disabled');
+        } else {
+            buttons[0].removeAttribute('disabled');
+        }
+        
+        // Botón de sumar (segundo botón)
+        if (quantity >= maxStock) {
+            buttons[1].setAttribute('disabled', 'disabled');
+        } else {
+            buttons[1].removeAttribute('disabled');
+        }
+    }
+    </script>
 </x-store-layout>

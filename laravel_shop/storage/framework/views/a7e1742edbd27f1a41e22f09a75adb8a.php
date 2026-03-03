@@ -36,7 +36,7 @@
                         </a>
                     </div>
 
-                    <!-- MENÚ PRINCIPAL - SIN EMOJIS -->
+                    <!-- MENÚ PRINCIPAL -->
                     <nav class="hidden md:flex space-x-8 items-center ml-4">
                         <a href="<?php echo e(route('products.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.index') ? 'text-neon-blue' : ''); ?>">
                             Catálogo
@@ -52,13 +52,13 @@
                         </a>
                     </nav>
 
-                    <!-- BARRA DE BÚSQUEDA GRANDE -->
+                    <!-- BARRA DE BÚSQUEDA -->
                     <div class="flex-1 max-w-2xl mx-8">
                         <form action="<?php echo e(route('search')); ?>" method="GET" class="relative" id="search-form">
                             <input type="text" 
                                    name="q" 
                                    id="search-input"
-                                   placeholder="Buscar productos, consolas, manga..." 
+                                   placeholder="Buscar productos..." 
                                    value="<?php echo e(request('q')); ?>"
                                    class="w-full bg-gray-800 border border-gray-700 rounded-full pl-6 pr-14 py-3 text-white focus:outline-none focus:border-neon-blue transition text-base"
                                    autocomplete="off">
@@ -73,30 +73,22 @@
                         </form>
                     </div>
 
-                    <!-- Acciones (carrito, usuario) -->
+                    <!-- Acciones -->
                     <div class="flex items-center space-x-4">
                         <?php if(auth()->guard()->check()): ?>
                             <?php
                                 $isBanned = Auth::user()->isBanned();
-                                $ban = Auth::user()->activeBan();
                             ?>
                             
                             <!-- Carrito -->
-                            <?php if($isBanned): ?>
-                                <div class="relative p-2 text-gray-500 cursor-not-allowed" title="No puedes comprar mientras estás baneado">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                    <?php if(session('cart')): ?>
-                                        <span class="absolute top-0 right-0 bg-neon-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><?php echo e(count(session('cart'))); ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            <?php else: ?>
-                                <a href="<?php echo e(route('cart.index')); ?>" class="relative p-2 text-gray-400 hover:text-neon-blue transition">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                    <?php if(session('cart')): ?>
-                                        <span class="absolute top-0 right-0 bg-neon-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><?php echo e(count(session('cart'))); ?></span>
-                                    <?php endif; ?>
-                                </a>
-                            <?php endif; ?>
+                            <a href="<?php echo e(route('cart.index')); ?>" class="relative p-2 text-gray-400 hover:text-neon-blue transition">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <?php if(session('cart')): ?>
+                                    <span class="absolute top-0 right-0 bg-neon-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><?php echo e(count(session('cart'))); ?></span>
+                                <?php endif; ?>
+                            </a>
                         <?php endif; ?>
 
                         <?php if(auth()->guard()->check()): ?>
@@ -108,7 +100,7 @@
                                         <span class="ml-2 px-2 py-1 bg-neon-red/20 text-neon-red text-xs rounded-full">BANEADO</span>
                                     <?php endif; ?>
                                     <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path>
                                     </svg>
                                 </button>
                                 <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-56 bg-gamer-card border border-gray-700 rounded-md shadow-xl py-1 z-50">
@@ -119,10 +111,16 @@
                                         <div class="px-4 py-1 text-xs text-gray-500 uppercase tracking-wider">Administración</div>
                                         <a href="<?php echo e(route('admin.products.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">📦 Productos</a>
                                         <a href="<?php echo e(route('admin.users.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">👥 Usuarios</a>
-                                        <a href="<?php echo e(route('admin.bans.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🚫 Baneos</a>
                                         <a href="<?php echo e(route('admin.raffles.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🎲 Sorteos</a>
-                                        <a href="<?php echo e(route('admin.orders.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">📦 Pedidos</a>
-                                        <a href="<?php echo e(route('admin.reviews.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-purple">⭐ Valoraciones</a>
+                                        
+                                        <!-- LIMPIAR CHAT - CORREGIDO A POST -->
+                                        <form action="<?php echo e(route('admin.clean-messages')); ?>" method="POST" class="block">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red"
+                                                    onclick="return confirm('¿Eliminar todos los mensajes del chat? Esta acción no se puede deshacer.')">
+                                                🧹 Limpiar chat
+                                            </button>
+                                        </form>
                                     <?php endif; ?>
                                     
                                     <div class="border-t border-gray-800 my-1"></div>

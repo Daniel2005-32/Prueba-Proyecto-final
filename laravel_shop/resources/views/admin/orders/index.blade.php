@@ -1,86 +1,31 @@
 <x-store-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-8">
-                <h1 class="text-4xl font-black text-white mb-2">
-                    <span class="text-neon-blue">📦 Gestión de Pedidos</span>
-                </h1>
-                <p class="text-gray-400">Administra todos los pedidos de la tienda</p>
-            </div>
-
-            @if(session('success'))
-                <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-6">
-                    {{ session('success') }}
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-4xl font-black text-white mb-2">
+                        <span class="text-neon-green">📦 Gestión de Pedidos</span>
+                    </h1>
+                    <p class="text-gray-400">Administra todos los pedidos de la tienda</p>
                 </div>
-            @endif
-
-            <div class="bg-gamer-card rounded-2xl border border-neon-blue/20 overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-gray-800 border-b border-neon-blue/20">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-neon-blue">ID</th>
-                            <th class="px-6 py-4 text-left text-neon-blue">Cliente</th>
-                            <th class="px-6 py-4 text-left text-neon-blue">Total</th>
-                            <th class="px-6 py-4 text-left text-neon-blue">Fecha</th>
-                            <th class="px-6 py-4 text-left text-neon-blue">Estado</th>
-                            <th class="px-6 py-4 text-left text-neon-blue">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($orders as $order)
-                            <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                                <td class="px-6 py-4 text-gray-300">#{{ $order->id }}</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-white font-bold text-sm">
-                                            {{ strtoupper(substr($order->user->name, 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <span class="text-white font-medium">{{ $order->user->name }}</span>
-                                            <p class="text-gray-500 text-xs">{{ $order->user->email }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-neon-blue font-bold">{{ number_format($order->total, 2) }}€</span>
-                                </td>
-                                <td class="px-6 py-4 text-gray-400 text-sm">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                <td class="px-6 py-4">
-                                    @if($order->status == 'pending')
-                                        <span class="px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">Pendiente</span>
-                                    @elseif($order->status == 'completed')
-                                        <span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Completado</span>
-                                    @else
-                                        <span class="px-3 py-1 bg-red-600/20 text-red-400 rounded-full text-xs">Cancelado</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex space-x-2">
-                                        <a href="{{ route('admin.orders.show', $order) }}" 
-                                           class="px-3 py-1 bg-neon-blue/10 text-neon-blue rounded-lg hover:bg-neon-blue hover:text-gamer-dark transition text-sm">
-                                            Ver detalles
-                                        </a>
-                                        <form action="{{ route('admin.orders.destroy', $order) }}" 
-                                              method="POST" 
-                                              onsubmit="return confirm('¿Eliminar este pedido?')"
-                                              class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="px-3 py-1 bg-neon-red/10 text-neon-red rounded-lg hover:bg-neon-red hover:text-white transition text-sm">
-                                                Eliminar
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="flex space-x-4">
+                    <a href="{{ route('admin.products.index') }}" class="px-4 py-2 bg-neon-blue/10 text-neon-blue rounded-lg hover:bg-neon-blue hover:text-gamer-dark transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        Ver Productos
+                    </a>
+                    <a href="{{ route('admin.reviews.index') }}" class="px-4 py-2 bg-yellow-600/10 text-yellow-500 rounded-lg hover:bg-yellow-600 hover:text-white transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        Ver Valoraciones
+                    </a>
+                </div>
             </div>
 
-            <div class="mt-6">
-                {{ $orders->links() }}
-            </div>
+            <!-- Resto del contenido igual... -->
+            @include('admin.orders.partials.list')
         </div>
     </div>
 </x-store-layout>

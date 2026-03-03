@@ -64,22 +64,27 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
-// Admin routes - Valoraciones (CORREGIDO - UNA SOLA VEZ)
+// Admin routes - Valoraciones
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('reviews', App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'destroy']);
     Route::post('reviews/{review}/approve', [App\Http\Controllers\Admin\ReviewController::class, 'approve'])->name('reviews.approve');
 });
 
-// Ruta para limpiar mensajes manualmente (solo admins)
-Route::get('/admin/clean-messages', function() {
+// Ruta para limpiar mensajes - CORREGIDA A POST
+Route::post('/admin/clean-messages', function() {
     if (!auth()->check() || !auth()->user()->is_admin) {
         abort(403, 'Solo administradores');
     }
     
-    $deleted = \Illuminate\Support\Facades\Artisan::call('messages:delete-old --hours=1');
-    
-    return redirect()->back()->with('success', "Mensajes antiguos eliminados correctamente.");
-})->name('admin.clean.messages')->middleware('auth');
+    try {
+        // Eliminar TODOS los mensajes del chat
+        \App\Models\ChatMessage::truncate();
+        
+        return redirect()->back()->with('success', '✅ Todos los mensajes del chat han sido eliminados correctamente.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', '❌ Error al limpiar el chat: ' . $e->getMessage());
+    }
+})->name('admin.clean-messages')->middleware('auth');
 
 // ============================================
 // RUTAS DE SUBASTAS
