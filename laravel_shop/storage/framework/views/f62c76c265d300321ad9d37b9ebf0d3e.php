@@ -22,7 +22,7 @@
                     <div>
                         <img src="<?php echo e($product->image); ?>" alt="<?php echo e($product->name); ?>" class="w-full rounded-lg">
                     </div>
-                    
+
                     <!-- Detalles del producto -->
                     <div>
                         <span class="text-neon-blue text-sm uppercase"><?php echo e($product->category->name); ?></span>
@@ -91,6 +91,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN DE VALORACIONES - AQUÍ VA TODO -->
+            <!-- ============================================ -->
+            <div class="mt-12">
+                <?php echo $__env->make('products.partials.reviews', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            </div>
+            <!-- ============================================ -->
+
         </div>
     </div>
  <?php echo $__env->renderComponent(); ?>

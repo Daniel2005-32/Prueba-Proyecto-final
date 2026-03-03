@@ -40,6 +40,50 @@ class Product extends Model
     }
 
     /**
+     * Relación con valoraciones
+     */
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    /**
+     * Obtener valoraciones aprobadas
+     */
+    public function approvedReviews()
+    {
+        return $this->hasMany(ProductReview::class)->where('is_approved', true);
+    }
+
+    /**
+     * Calcular valoración media
+     */
+    public function getAverageRatingAttribute()
+    {
+        $reviews = $this->approvedReviews;
+        if ($reviews->isEmpty()) {
+            return 0;
+        }
+        return round($reviews->avg('rating'), 1);
+    }
+
+    /**
+     * Verificar si un usuario ya valoró este producto
+     */
+    public function reviewedByUser($userId)
+    {
+        return $this->reviews()->where('user_id', $userId)->exists();
+    }
+
+    /**
+     * Obtener la valoración de un usuario específico
+     */
+    public function getUserReview($userId)
+    {
+        return $this->reviews()->where('user_id', $userId)->first();
+    }
+
+    /**
      * Iniciar subasta para un producto exclusivo
      */
     public function startAuction()
@@ -48,10 +92,7 @@ class Product extends Model
             return false;
         }
 
-        // Guardar el precio original antes de aplicar el descuento
         $this->original_price = $this->price;
-        
-        // Aplicar 20% de descuento para el inicio de la subasta
         $this->price = $this->price * 0.8;
         $this->is_in_auction = true;
         $this->auction_end_time = Carbon::now()->addHours(24);
@@ -113,7 +154,7 @@ class Product extends Model
             return 0;
         }
         
-        $total = 24 * 60 * 60; // 24 horas en segundos
+        $total = 24 * 60 * 60;
         $elapsed = Carbon::now()->diffInSeconds($this->auction_end_time, false);
         
         if ($elapsed <= 0) {
@@ -129,11 +170,9 @@ class Product extends Model
     public function endAuctionAndRemoveFromCatalog()
     {
         if ($this->auction_winner_id) {
-            // Si hay ganador, el stock se reduce a 0 (vendido)
             $this->stock = 0;
         } else {
-            // Si no hay ganador, restauramos el precio original y volvemos a 1 unidad
-            $this->price = $this->original_price;
+            $this->price = $this->original_price ?? $this->price;
             $this->original_price = null;
             $this->stock = 1;
         }
@@ -145,15 +184,20 @@ class Product extends Model
     }
 
     /**
-     * Cancelar subasta (admin)
+     * Cancelar subasta (admin) - CORREGIDO
      */
     public function cancelAuction()
     {
         $this->is_in_auction = false;
         $this->auction_cancelled = true;
         $this->auction_end_time = null;
-        $this->price = $this->original_price;
-        $this->original_price = null;
+        
+        // Si hay precio original, restaurarlo; si no, mantener el precio actual
+        if ($this->original_price) {
+            $this->price = $this->original_price;
+            $this->original_price = null;
+        }
+        
         $this->stock = 1;
         
         return $this->save();

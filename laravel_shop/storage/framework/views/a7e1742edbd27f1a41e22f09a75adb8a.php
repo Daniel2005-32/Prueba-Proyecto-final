@@ -26,7 +26,7 @@
         <header class="sticky top-0 z-50 bg-gamer-dark/90 backdrop-blur-sm border-b border-neon-purple/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-20">
-                    <!-- Logo (con más separación) -->
+                    <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center mr-8 lg:mr-12">
                         <a href="<?php echo e(route('home')); ?>" class="flex items-center group">
                             <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Gamer Guild Logo" class="h-16 w-auto transition-transform group-hover:scale-110">
@@ -36,9 +36,9 @@
                         </a>
                     </div>
 
-                    <!-- MENÚ SIMPLIFICADO (con más espacio del logo) -->
+                    <!-- MENÚ PRINCIPAL - SIN EMOJIS -->
                     <nav class="hidden md:flex space-x-8 items-center ml-4">
-                        <a href="<?php echo e(route('products.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.*') && !request()->routeIs('products.category*') ? 'text-neon-blue' : ''); ?>">
+                        <a href="<?php echo e(route('products.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.index') ? 'text-neon-blue' : ''); ?>">
                             Catálogo
                         </a>
                         <a href="<?php echo e(route('auctions.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('auctions.*') ? 'text-neon-purple' : ''); ?>">
@@ -58,7 +58,7 @@
                             <input type="text" 
                                    name="q" 
                                    id="search-input"
-                                   placeholder="Buscar productos, consolas, manga, anime..." 
+                                   placeholder="Buscar productos, consolas, manga..." 
                                    value="<?php echo e(request('q')); ?>"
                                    class="w-full bg-gray-800 border border-gray-700 rounded-full pl-6 pr-14 py-3 text-white focus:outline-none focus:border-neon-blue transition text-base"
                                    autocomplete="off">
@@ -73,7 +73,7 @@
                         </form>
                     </div>
 
-                    <!-- Acciones -->
+                    <!-- Acciones (carrito, usuario) -->
                     <div class="flex items-center space-x-4">
                         <?php if(auth()->guard()->check()): ?>
                             <?php
@@ -122,6 +122,7 @@
                                         <a href="<?php echo e(route('admin.bans.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🚫 Baneos</a>
                                         <a href="<?php echo e(route('admin.raffles.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🎲 Sorteos</a>
                                         <a href="<?php echo e(route('admin.orders.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">📦 Pedidos</a>
+                                        <a href="<?php echo e(route('admin.reviews.index')); ?>" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-purple">⭐ Valoraciones</a>
                                     <?php endif; ?>
                                     
                                     <div class="border-t border-gray-800 my-1"></div>
@@ -173,7 +174,7 @@
             <?php endif; ?>
         <?php endif; ?>
 
-        <!-- CONTENEDOR PRINCIPAL CON IMÁGENES LATERALES ROTATIVAS -->
+        <!-- CONTENEDOR PRINCIPAL -->
         <div class="relative flex-grow">
             <!-- FONDO IZQUIERDO -->
             <div class="fixed left-0 top-0 h-full w-1/2 pointer-events-none overflow-hidden">
@@ -231,6 +232,8 @@
         <?php if(!Auth::user()->isBanned()): ?>
             <?php echo $__env->make('components.floating-chat', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         <?php endif; ?>
+    <?php else: ?>
+        <?php echo $__env->make('components.floating-chat', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     <?php endif; ?>
 
     <script>
@@ -272,7 +275,7 @@
 
         setInterval(rotateImages, 7000);
 
-        // SUGERENCIAS DE BÚSQUEDA - CORREGIDO
+        // SUGERENCIAS DE BÚSQUEDA
         const searchInput = document.getElementById('search-input');
         const suggestionsDiv = document.getElementById('search-suggestions');
 
@@ -291,13 +294,12 @@
                         if (data.length > 0) {
                             let html = '';
                             data.forEach(product => {
-                                const priceWithIva = (product.price * 1.21).toFixed(2);
                                 html += `
                                     <a href="/products/${product.slug}" class="flex items-center p-3 hover:bg-gray-800 transition border-b border-gray-800 last:border-0">
                                         <img src="${product.image}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
                                         <div class="ml-3 flex-1">
                                             <div class="text-white text-sm font-medium">${product.name}</div>
-                                            <div class="text-neon-blue text-xs">${priceWithIva}€</div>
+                                            <div class="text-neon-blue text-xs">${(product.price * 1.21).toFixed(2)}€</div>
                                         </div>
                                     </a>
                                 `;

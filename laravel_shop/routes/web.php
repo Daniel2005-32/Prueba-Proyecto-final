@@ -64,6 +64,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
+// Admin routes - Valoraciones (CORREGIDO - UNA SOLA VEZ)
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::resource('reviews', App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'destroy']);
+    Route::post('reviews/{review}/approve', [App\Http\Controllers\Admin\ReviewController::class, 'approve'])->name('reviews.approve');
+});
+
 // Ruta para limpiar mensajes manualmente (solo admins)
 Route::get('/admin/clean-messages', function() {
     if (!auth()->check() || !auth()->user()->is_admin) {
@@ -140,10 +146,8 @@ Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function
 });
 
 // ============================================
-// RUTAS DE OFERTAS Y CONTACTO (CORREGIDAS)
+// RUTAS DE OFERTAS Y CONTACTO
 // ============================================
-
-// Ruta de ofertas
 Route::get('/ofertas', function () {
     $offers = App\Models\Product::where('original_price', '>', 0)
         ->whereColumn('price', '<', 'original_price')
@@ -153,9 +157,7 @@ Route::get('/ofertas', function () {
     return view('offers', compact('offers'));
 })->name('offers');
 
-// Ruta de contacto - CORREGIDA para aceptar GET y POST
 Route::match(['get', 'post'], '/contacto', function () {
-    // Si es POST, procesamos el formulario
     if (request()->isMethod('post')) {
         $data = request()->validate([
             'name' => 'required|string|max:255',
@@ -163,15 +165,32 @@ Route::match(['get', 'post'], '/contacto', function () {
             'message' => 'required|string|max:1000',
         ]);
         
-        // Aquí puedes enviar un email o guardar en BD
-        // Por ahora solo mostramos un mensaje de éxito
-        
         return redirect()->back()->with('success', '¡Mensaje enviado correctamente! Te responderemos pronto.');
     }
     
-    // Si es GET, mostramos el formulario
     return view('contact');
 })->name('contact');
+
+// ============================================
+// RUTAS DE VALORACIONES (PÚBLICAS)
+// ============================================
+Route::get('/products/{product}/reviews', function(App\Models\Product $product) {
+    return response()->json([
+        'reviews' => $product->approvedReviews()->with('user')->latest()->get()
+    ]);
+})->name('products.reviews');
+
+Route::post('/products/{product}/reviews', [App\Http\Controllers\ProductReviewController::class, 'store'])
+    ->name('products.reviews.store')
+    ->middleware('auth');
+
+Route::put('/reviews/{review}', [App\Http\Controllers\ProductReviewController::class, 'update'])
+    ->name('reviews.update')
+    ->middleware('auth');
+
+Route::delete('/reviews/{review}', [App\Http\Controllers\ProductReviewController::class, 'destroy'])
+    ->name('reviews.destroy')
+    ->middleware('auth');
 
 // ============================================
 // RUTAS DE CARRITO Y PEDIDOS
@@ -189,7 +208,6 @@ Route::post('/checkout', [OrderController::class, 'checkout'])->name('cart.check
 // ============================================
 Route::get('/buscar', [App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/buscar/sugerencias', [App\Http\Controllers\SearchController::class, 'suggestions'])->name('search.suggestions');
-
 
 // ============================================
 // RUTAS DE PEDIDOS

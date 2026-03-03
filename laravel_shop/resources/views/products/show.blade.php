@@ -13,7 +13,7 @@
                     <div>
                         <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full rounded-lg">
                     </div>
-                    
+
                     <!-- Detalles del producto -->
                     <div>
                         <span class="text-neon-blue text-sm uppercase">{{ $product->category->name }}</span>
@@ -82,6 +82,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ============================================ -->
+            <!-- SECCIÓN DE VALORACIONES - AQUÍ VA TODO -->
+            <!-- ============================================ -->
+            <div class="mt-12">
+                @include('products.partials.reviews')
+            </div>
+            <!-- ============================================ -->
+
         </div>
     </div>
 </x-store-layout>
