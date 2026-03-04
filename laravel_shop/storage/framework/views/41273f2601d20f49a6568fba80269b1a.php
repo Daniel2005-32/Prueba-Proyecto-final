@@ -14,13 +14,13 @@
             <div class="max-w-4xl text-center">
                 <!-- TÍTULO PRINCIPAL -->
                 <h1 class="text-7xl sm:text-8xl md:text-9xl font-black text-white leading-none mb-6 tracking-tighter uppercase italic">
-                    <span class="text-neon-blue neon-text-blue block">GAMER</span>
+                    <span class="text-neon-blue neon-text-blue block">Soul</span>
                     <span class="text-neon-purple neon-text-purple block">GUILD</span>
                 </h1>
                 
                 <!-- TEXTO DESCRIPTIVO (restaurado) -->
                 <p class="text-lg sm:text-xl text-gray-300 mb-8 leading-relaxed font-medium max-w-3xl mx-auto">
-                    Tu santuario definitivo para la cultura gamer y otaku. En Gamer Guild nos apasiona ofrecerte lo último en videojuegos, manga de colección, las figuras más detalladas y el mejor cosplay para tus eventos. ¡Únete a nuestra hermandad!
+                    Tu santuario definitivo para la cultura gamer y otaku. En Soul Guild nos apasiona ofrecerte lo último en videojuegos, manga de colección, las figuras más detalladas y el mejor cosplay para tus eventos. ¡Únete a nuestra hermandad!
                 </p>
                 
                 <!-- BOTONES -->

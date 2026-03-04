@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <title>Registro - Soul Guild</title>
 
@@ -12,7 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800,900&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
         .neon-text-blue { text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff; }
@@ -32,7 +32,7 @@
 
         <!-- Logo y título -->
         <div class="relative z-10 text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-block group">
+            <a href="<?php echo e(route('home')); ?>" class="inline-block group">
                 <h1 class="text-5xl font-black tracking-tighter">
                     <span class="text-neon-blue group-hover:neon-text-blue transition">SOUL</span>
                     <span class="text-neon-purple group-hover:neon-text-purple transition">GUILD</span>
@@ -54,40 +54,82 @@
 
                 <h2 class="text-2xl font-black text-center text-white mb-6">CREAR CUENTA</h2>
 
-                <form method="POST" action="{{ route('register') }}" class="space-y-5">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('register')); ?>" class="space-y-5">
+                    <?php echo csrf_field(); ?>
 
                     <!-- Name -->
                     <div>
                         <label for="name" class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Nombre</label>
-                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition @error('name') border-neon-red @enderror"
+                        <input id="name" type="text" name="name" value="<?php echo e(old('name')); ?>" required autofocus
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-neon-red <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                placeholder="Tu nombre">
-                        @error('name')
-                            <p class="mt-1 text-sm text-neon-red">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="mt-1 text-sm text-neon-red"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Email -->
                     <div>
                         <label for="email" class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Email</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition @error('email') border-neon-red @enderror"
+                        <input id="email" type="email" name="email" value="<?php echo e(old('email')); ?>" required
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-neon-red <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                placeholder="tu@email.com">
-                        @error('email')
-                            <p class="mt-1 text-sm text-neon-red">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="mt-1 text-sm text-neon-red"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Password -->
                     <div>
                         <label for="password" class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wider">Contraseña</label>
                         <input id="password" type="password" name="password" required
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition @error('password') border-neon-red @enderror"
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple transition <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-neon-red <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                placeholder="••••••••">
-                        @error('password')
-                            <p class="mt-1 text-sm text-neon-red">{{ $message }}</p>
-                        @enderror
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="mt-1 text-sm text-neon-red"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <!-- Confirm Password -->
@@ -117,7 +159,7 @@
                     <!-- Login link -->
                     <div class="text-center text-gray-400">
                         ¿Ya tienes cuenta?
-                        <a href="{{ route('login') }}" class="text-neon-blue hover:text-neon-purple font-bold transition">
+                        <a href="<?php echo e(route('login')); ?>" class="text-neon-blue hover:text-neon-purple font-bold transition">
                             Iniciar sesión
                         </a>
                     </div>
@@ -127,8 +169,9 @@
 
         <!-- Footer pequeño -->
         <div class="relative z-10 mt-8 text-center text-gray-600 text-sm">
-            &copy; {{ date('Y') }} Soul Guild. Todos los derechos reservados.
+            &copy; <?php echo e(date('Y')); ?> Soul Guild. Todos los derechos reservados.
         </div>
     </div>
 </body>
 </html>
+<?php /**PATH /home/ctk/Documentos/Proyecto_Daniel/Proyecto-final-main/laravel_shop/resources/views/auth/register.blade.php ENDPATH**/ ?>

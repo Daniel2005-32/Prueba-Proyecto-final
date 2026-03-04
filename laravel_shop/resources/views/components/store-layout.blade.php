@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Gamer Guild') }}</title>
+    <title>{{ config('app.name', 'Soul Guild') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -29,9 +29,9 @@
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center mr-8 lg:mr-12">
                         <a href="{{ route('home') }}" class="flex items-center group">
-                            <img src="{{ asset('images/logo.png') }}" alt="Gamer Guild Logo" class="h-16 w-auto transition-transform group-hover:scale-110">
+                            <img src="{{ asset('images/logo.png') }}" alt="Soul Guild Logo" class="h-16 w-auto transition-transform group-hover:scale-110">
                             <span class="ml-3 text-2xl font-black tracking-tighter text-white group-hover:text-neon-blue transition">
-                                GAMER <span class="text-neon-purple">GUILD</span>
+                                SOUL <span class="text-neon-purple">GUILD</span>
                             </span>
                         </a>
                     </div>
@@ -213,7 +213,7 @@
         <footer class="bg-black/80 border-t border-gray-800 py-12 relative z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center text-gray-500 text-sm">
-                    &copy; {{ date('Y') }} Gamer Guild. Todos los derechos reservados.
+                    &copy; {{ date('Y') }} Soul Guild. Todos los derechos reservados.
                 </div>
             </div>
         </footer>

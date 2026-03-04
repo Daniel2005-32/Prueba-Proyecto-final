@@ -60,7 +60,7 @@
                                 <div class="text-neon-purple text-xl">✉️</div>
                                 <div>
                                     <h3 class="text-white font-bold">Email</h3>
-                                    <p class="text-gray-400">info@gamerguild.com</p>
+                                    <p class="text-gray-400">info@soulguild.com</p>
                                 </div>
                             </div>
                             
