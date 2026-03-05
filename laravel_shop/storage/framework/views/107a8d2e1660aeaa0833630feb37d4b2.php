@@ -123,7 +123,6 @@
                                             </form>
                                         <?php endif; ?>
 
-                                        <!-- BOTÓN DE BANEAR CON JAVASCRIPT VANILLA -->
                                         <?php if(!$user->isBanned() && !$user->isSuperAdmin()): ?>
                                             <?php if(auth()->user()->isSuperAdmin()): ?>
                                                 <?php if($user->id !== auth()->id()): ?>
@@ -144,7 +143,6 @@
                                             <?php endif; ?>
                                         <?php endif; ?>
 
-                                        <!-- BOTÓN DE DESBANEAR -->
                                         <?php if($user->isBanned()): ?>
                                             <form action="<?php echo e(route('admin.users.unban', $user)); ?>" method="POST" class="inline">
                                                 <?php echo csrf_field(); ?>
@@ -169,7 +167,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE BANEO (JavaScript Vanilla) -->
+    <!-- MODAL DE BANEO -->
     <div id="banModalOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden" onclick="closeBanModal()"></div>
 
     <div id="banModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
@@ -182,51 +180,48 @@
             </h2>
 
             <form method="POST" id="banForm">
-                <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
-                
+                <?php echo csrf_field(); ?>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-gray-300 mb-2 font-bold">Razón del baneo</label>
                         <textarea name="reason" rows="3" required
-                                placeholder="Motivo por el que se banea al usuario..."
-                                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-red"></textarea>
+                                  placeholder="Motivo por el que se banea al usuario..."
+                                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-red"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 mb-2 font-bold">Duración del baneo</label>
-                        
-                        <!-- Opciones predefinidas -->
-                        <div class="grid grid-cols-2 gap-2 mb-3">
+                        <label class="block text-gray-300 mb-2 font-bold">Duración</label>
+                        <div class="grid grid-cols-2 gap-2">
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="permanent" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="permanent" class="text-neon-red" required>
                                 <span class="text-white text-sm">Permanente</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="1" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="1" class="text-neon-red">
                                 <span class="text-white text-sm">1 hora</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="6" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="6" class="text-neon-red">
                                 <span class="text-white text-sm">6 horas</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="12" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="12" class="text-neon-red">
                                 <span class="text-white text-sm">12 horas</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="24" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="24" class="text-neon-red">
                                 <span class="text-white text-sm">24 horas</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="48" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="48" class="text-neon-red">
                                 <span class="text-white text-sm">48 horas</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="72" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="72" class="text-neon-red">
                                 <span class="text-white text-sm">72 horas</span>
                             </label>
                             <label class="flex items-center space-x-2 p-2 bg-gray-800 rounded cursor-pointer hover:bg-gray-700">
-                                <input type="radio" name="duration" value="168" class="text-neon-red" onchange="toggleCustomTime(false)">
+                                <input type="radio" name="duration" value="168" class="text-neon-red">
                                 <span class="text-white text-sm">7 días</span>
                             </label>
                         </div>
@@ -234,13 +229,10 @@
                 </div>
 
                 <div class="flex gap-3 mt-6">
-                    <button type="button" 
-                            onclick="closeBanModal()"
-                            class="flex-1 px-4 py-2 bg-gray-800 text-gray-300 font-bold rounded-lg hover:bg-gray-700 transition">
+                    <button type="button" onclick="closeBanModal()" class="flex-1 px-4 py-2 bg-gray-800 text-gray-300 font-bold rounded-lg hover:bg-gray-700 transition">
                         Cancelar
                     </button>
-                    <button type="submit" 
-                            class="flex-1 px-4 py-2 bg-neon-red text-white font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(255,0,85,0.4)]">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-neon-red text-white font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(255,0,85,0.4)]">
                         Banear
                     </button>
                 </div>
@@ -249,11 +241,7 @@
     </div>
 
     <script>
-        let currentUserId = null;
-
         function openBanModal(userId, userName) {
-            console.log('Abriendo modal para:', userName, userId);
-            currentUserId = userId;
             document.getElementById('banUserName').textContent = userName;
             document.getElementById('banForm').action = `/admin/users/${userId}/ban`;
             document.getElementById('banModal').classList.remove('hidden');
