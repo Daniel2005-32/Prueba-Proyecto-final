@@ -43,12 +43,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('users/{user}/toggle-admin', [App\Http\Controllers\Admin\UserController::class, 'toggleAdmin'])->name('users.toggle-admin');
-});
-
-// Admin routes - Baneos
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    Route::resource('bans', App\Http\Controllers\Admin\BanController::class);
-    Route::post('bans/unban/{user}', [App\Http\Controllers\Admin\BanController::class, 'unban'])->name('bans.unban');
+    Route::post('users/{user}/ban', [App\Http\Controllers\Admin\UserController::class, 'ban'])->name('users.ban');
+    Route::post('users/{user}/unban', [App\Http\Controllers\Admin\UserController::class, 'unban'])->name('users.unban');
 });
 
 // Admin routes - Sorteos

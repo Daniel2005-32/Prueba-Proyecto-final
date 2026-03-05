@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Ban;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -149,5 +151,91 @@ class UserController extends Controller
         
         return redirect()->route('admin.users.index')
             ->with('success', "Usuario {$status} correctamente");
+    }
+
+    /**
+     * Banear un usuario
+     */
+    public function ban(Request $request, User $user)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, 'Acceso no autorizado');
+        }
+
+        // Verificaciones de seguridad
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No puedes banear al Super Admin');
+        }
+
+        if ($user->is_admin && !auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No tienes permiso para banear a otros administradores');
+        }
+
+        if ($user->id === auth()->id()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No puedes banearte a ti mismo');
+        }
+
+        // Validar los datos del formulario (acepta valores numéricos para horas personalizadas)
+        $request->validate([
+            'reason' => 'required|string|max:255',
+            'duration' => 'required', // Puede ser string (permanent, 1, 6, etc) o número
+        ]);
+
+        // Crear el baneo
+        $data = [
+            'user_id' => $user->id,
+            'banned_by' => auth()->id(),
+            'reason' => $request->reason,
+        ];
+
+        if ($request->duration === 'permanent') {
+            $data['is_permanent'] = true;
+            $data['banned_until'] = null;
+        } else {
+            // Si es un número (personalizado) o uno de los predefinidos
+            $hours = (int) $request->duration;
+            $data['banned_until'] = Carbon::now()->addHours($hours);
+        }
+
+        Ban::create($data);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Usuario {$user->name} baneado correctamente");
+    }
+
+    /**
+     * Desbanear un usuario
+     */
+    public function unban(User $user)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, 'Acceso no autorizado');
+        }
+
+        // Verificaciones de seguridad
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'El Super Admin no puede ser desbaneado');
+        }
+
+        if ($user->is_admin && !auth()->user()->isSuperAdmin()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'No tienes permiso para desbanear a otros administradores');
+        }
+
+        // Buscar el baneo activo
+        $ban = $user->activeBan();
+        
+        if ($ban) {
+            $ban->update(['banned_until' => Carbon::now()]);
+            return redirect()->route('admin.users.index')
+                ->with('success', "Usuario {$user->name} desbaneado correctamente");
+        }
+
+        return redirect()->route('admin.users.index')
+            ->with('error', 'El usuario no está baneado');
     }
 }
