@@ -23,7 +23,7 @@ class SearchController extends Controller
             })
             ->where('stock', '>', 0)
             ->where('is_in_auction', false)
-            ->paginate(12);
+            ->paginate(20); // Cambiado de 12 a 20
             
         return view('search.results', compact('products', 'query'));
     }

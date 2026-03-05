@@ -18,13 +18,23 @@
         .neon-text-blue { text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff; }
         .neon-text-purple { text-shadow: 0 0 5px #9d00ff, 0 0 10px #9d00ff; }
         .neon-text-red { text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055; }
+        /* Para pantallas muy grandes */
+        @media (min-width: 2000px) {
+            .max-w-screen-2xl {
+                max-width: 95% !important;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+            }
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gamer-dark text-gray-100">
     <div class="min-h-screen flex flex-col">
         <!-- Header Fijo -->
         <header class="sticky top-0 z-50 bg-gamer-dark/90 backdrop-blur-sm border-b border-neon-purple/30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-20">
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center mr-8 lg:mr-12">
@@ -148,7 +158,7 @@
             ?>
             <?php if(Auth::user()->isBanned() && $ban): ?>
                 <div class="bg-neon-red/20 border-b border-neon-red/30 py-3">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
                                 <svg class="w-6 h-6 text-neon-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +204,7 @@
 
             <!-- CONTENIDO CENTRAL -->
             <div class="relative z-10 min-h-screen">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <?php if(session('success')): ?>
                         <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-6">
                             <?php echo e(session('success')); ?>
@@ -213,11 +223,10 @@
 
                 </div>
             </div>
-        </div>
 
         <!-- Footer -->
         <footer class="bg-black/80 border-t border-gray-800 py-12 relative z-10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="text-center text-gray-500 text-sm">
                     &copy; <?php echo e(date('Y')); ?> Soul Guild. Todos los derechos reservados.
                 </div>
