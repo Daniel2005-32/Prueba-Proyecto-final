@@ -6,9 +6,21 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Helpers\PriceHelper;
 
 class AuctionController extends Controller
 {
+    /**
+     * Verificar si el usuario está baneado
+     */
+    private function checkBanned()
+    {
+        if (Auth::check() && Auth::user()->isBanned()) {
+            return redirect()->back()->with('error', 'No puedes realizar esta acción mientras estás baneado.');
+        }
+        return null;
+    }
+
     public function index()
     {
         // Finalizar subastas que han terminado
@@ -50,6 +62,10 @@ class AuctionController extends Controller
 
     public function confirm($id)
     {
+        // Verificar si el usuario está baneado
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $product = Product::findOrFail($id);
         
         if (!$product->is_exclusive || $product->stock != 1) {
@@ -62,6 +78,10 @@ class AuctionController extends Controller
 
     public function bid(Request $request, $id)
     {
+        // Verificar si el usuario está baneado
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $request->validate([
             'amount' => 'required|numeric|min:0.01'
         ]);
@@ -97,6 +117,10 @@ class AuctionController extends Controller
 
     public function start(Request $request, $id)
     {
+        // Verificar si el usuario está baneado
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $product = Product::findOrFail($id);
         
         if (!$product->is_exclusive || $product->stock != 1) {
@@ -121,6 +145,10 @@ class AuctionController extends Controller
 
     public function claimPrize($id)
     {
+        // Verificar si el usuario está baneado
+        $check = $this->checkBanned();
+        if ($check) return $check;
+
         $product = Product::findOrFail($id);
         
         if (!Auth::check() || Auth::id() != $product->auction_winner_id) {
@@ -139,7 +167,7 @@ class AuctionController extends Controller
     }
 
     // ============================================
-    // MÉTODOS PARA ADMINISTRADORES
+    // MÉTODOS PARA ADMINISTRADORES (no requieren verificación de baneo)
     // ============================================
     
     public function extendAuction(Request $request, $id)

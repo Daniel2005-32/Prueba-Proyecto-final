@@ -33,9 +33,9 @@ return [
         'COJONES', 'COJON', 'COJONES', 'COJONAZOS',
         'Cojones', 'Cojon',
         
-        'cabron', 'cabrón', 'cabrona', 'cabronas', 'cabrones', 'cabronazos',
-        'CABRON', 'CABRÓN', 'CABRONA', 'CABRONAS', 'CABRONES', 'CABRONAZOS',
-        'Cabron', 'Cabrón', 'Cabrona', 'Cabronas', 'Cabrones',
+        'cabron', 'cabrón', 'cabrona', 'cabronas', 'cabrones', 'cabronazos', 'cabronazo', 'cabronaza',
+        'CABRON', 'CABRÓN', 'CABRONA', 'CABRONAS', 'CABRONES', 'CABRONAZOS', 'CABRONAZO', 'CABRONAZA',
+        'Cabron', 'Cabrón', 'Cabrona', 'Cabronas', 'Cabrones', 'Cabronazos', 'Cabronazo', 'Cabronaza',
         
         'gilipollas', 'gilipolla', 'gilipollas', 'gilipollazos',
         'GILIPOLLAS', 'GILIPOLLA', 'GILIPOLLAS',
@@ -54,6 +54,14 @@ return [
         'maricon', 'maricón', 'maricones', 'maricona', 'mariconas',
         'MARICON', 'MARICÓN', 'MARICONES', 'MARICONA', 'MARICONAS',
         'Maricon', 'Maricón',
+
+        'mamon', 'mamona', 'mamones', 
+        'MAMON', 'MAMONA', 'MAMONES',
+        'Mamon', 'Mamona', 'Mamones',
+
+        'matar', 'te voy a matar', 'muerto', 'muerta',
+        'MATAR', 'TE VOY A MATAR', 'MUERTO', 'MUERTA',
+        'Matar', 'Te Voy A Matar', 'Muerto', 'Muerta',
         
         'estupido', 'estúpido', 'estupida', 'estúpida', 'estupidos', 'estúpidos', 'estupidas', 'estúpidas',
         'ESTUPIDO', 'ESTÚPIDO', 'ESTUPIDA', 'ESTÚPIDA', 'ESTUPIDOS', 'ESTÚPIDOS', 'ESTUPIDAS', 'ESTÚPIDAS',
@@ -89,6 +97,10 @@ return [
         
         'zopenco', 'zopenco', 'zopencos',
         'ZOPENCO', 'ZOPENCO', 'ZOPENCOS',
+
+        'zumbao', 'zumbaa', 'zumbado', 'zumbada',
+        'ZUMBAO', 'ZUMBAA', 'ZUMBADO', 'ZUMBADA',
+        'Zumbao', 'Zumbaa', 'Zumbado', 'Zumbada',
         
         // ============================================
         // PALABRAS SUBIDAS DE TONO (NIVEL 1)
@@ -211,7 +223,23 @@ return [
         
         'caliente', 'calenton', 'calentona', 'calentorro',
         'CALIENTE', 'CALENTON', 'CALENTONA',
+
+        // ============================================
+        // PALABRAS EN LATINOAMERICA
+        // ============================================
         
+
+        'boludo', 'pelotudo', ' conchuda', 'cajetuda', 'argolluda', 'malcogida',  
+        'pijotero', 'guampudo', 'lola', 'goma', 'culiao', 'culiado', 're-culiao', 
+        'conchetumadre', 'agüeonao', 'mamón', 'huevón', 'weón', 'pendejo',  
+        'güey', 'wey', 'chingar', 'chingada', 'chingado', 'pinche', 
+        'menso', 'gafo', 'cabeceburro', 'cabeceduro', 'guacarnaco', 
+        'gonorrea', 'malparido', 'comemierda', 'ladilla', 'pajuilado', 
+        'pajuo', 'cachirulo', 'jueputa', 'parigüayo', 'parigüaya', 'lambón',
+        'culiabierto', 'zonzoneco', 'tolongo', 'zanguango', 'paparulo', 
+        'abombado', 'guachinango', 'lentejo', 'asnúpido', 'turuleco', 'samuro', 
+        'soroco', 'majiriulo', 'bachilín', 'majirulo',
+
         // ============================================
         // PALABRAS EN INGLÉS (COMUNES)
         // ============================================

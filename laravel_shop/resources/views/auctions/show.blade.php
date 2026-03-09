@@ -57,28 +57,38 @@
                         
                         @if($product->isAuctionActive())
                             @auth
-                                <form action="{{ route('auctions.bid', $product->id) }}" method="POST" class="space-y-4">
-                                    @csrf
-                                    
-                                    <div>
-                                        <label class="block text-gray-300 mb-2">Tu puja (€)</label>
-                                        <input type="number" 
-                                               name="amount" 
-                                               step="0.01" 
-                                               min="{{ $product->price + 0.01 }}" 
-                                               value="{{ $product->price + 1 }}"
-                                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple"
-                                               required>
-                                        <p class="text-sm text-gray-400 mt-2">
-                                            Puja actual: {{ number_format($product->price, 2) }}€
-                                        </p>
+                                @if(Auth::user()->isBanned())
+                                    <div class="text-center py-8 bg-neon-red/10 border border-neon-red/30 rounded-lg">
+                                        <svg class="w-12 h-12 text-neon-red mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                        </svg>
+                                        <p class="text-neon-red font-bold mb-2">⛔ ACCESO DENEGADO</p>
+                                        <p class="text-gray-400 text-sm">No puedes participar en subastas mientras estás baneado.</p>
                                     </div>
-                                    
-                                    <button type="submit" 
-                                            class="w-full px-6 py-4 bg-neon-purple text-white font-bold rounded-lg hover:bg-neon-purple/80 transition transform hover:scale-105">
-                                        ✅ Confirmar puja
-                                    </button>
-                                </form>
+                                @else
+                                    <form action="{{ route('auctions.bid', $product->id) }}" method="POST" class="space-y-4">
+                                        @csrf
+                                        
+                                        <div>
+                                            <label class="block text-gray-300 mb-2">Tu puja (€)</label>
+                                            <input type="number" 
+                                                name="amount" 
+                                                step="0.01" 
+                                                min="{{ $product->price + 0.01 }}" 
+                                                value="{{ $product->price + 1 }}"
+                                                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-purple"
+                                                required>
+                                            <p class="text-sm text-gray-400 mt-2">
+                                                Puja actual: {{ number_format($product->price, 2) }}€
+                                            </p>
+                                        </div>
+                                        
+                                        <button type="submit" 
+                                                class="w-full px-6 py-4 bg-neon-purple text-white font-bold rounded-lg hover:bg-neon-purple/80 transition transform hover:scale-105">
+                                            ✅ Confirmar puja
+                                        </button>
+                                    </form>
+                                @endif
                             @else
                                 <div class="text-center py-8 bg-gray-800/30 rounded-lg">
                                     <p class="text-gray-400 mb-4">Debes iniciar sesión para pujar</p>
@@ -93,18 +103,17 @@
                                     <div class="bg-green-900/30 border border-green-500 rounded-lg p-6">
                                         <p class="text-green-400 text-lg font-bold mb-2">🎉 ¡FELICIDADES!</p>
                                         <p class="text-white mb-4">Has ganado esta subasta</p>
-                                        <p class="text-neon-purple text-2xl font-bold">{{ number_format($product->auction_final_price, 2) }}€</p>
+                                        <p class="text-neon-purple text-2xl font-bold">{{ number_format($product->auction_final_price ?? $product->price, 2) }}€</p>
                                     </div>
                                 @elseif($product->auction_winner_id)
                                     <div class="bg-gray-800/50 rounded-lg p-6">
                                         <p class="text-gray-400">Subasta finalizada</p>
                                         <p class="text-neon-purple font-bold mt-2">Ganador: {{ $product->auctionWinner->name }}</p>
-                                        <p class="text-neon-purple mt-2">{{ number_format($product->auction_final_price, 2) }}€</p>
+                                        <p class="text-neon-purple mt-2">{{ number_format($product->auction_final_price ?? $product->price, 2) }}€</p>
                                     </div>
                                 @else
                                     <div class="bg-gray-800/50 rounded-lg p-6">
                                         <p class="text-gray-400">Subasta finalizada sin pujas</p>
-                                        <p class="text-sm text-gray-500 mt-2">El producto vuelve a su precio original</p>
                                     </div>
                                 @endif
                             </div>
@@ -121,11 +130,11 @@
                                         <form action="{{ route('auctions.extend', $product->id) }}" method="POST" class="flex space-x-2">
                                             @csrf
                                             <input type="number" 
-                                                   name="hours" 
-                                                   min="1" 
-                                                   max="72" 
-                                                   value="1" 
-                                                   class="w-20 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-center">
+                                                name="hours" 
+                                                min="1" 
+                                                max="72" 
+                                                value="1" 
+                                                class="w-20 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-center">
                                             <button type="submit" 
                                                     class="flex-1 px-3 py-1 bg-neon-blue/10 text-neon-blue rounded hover:bg-neon-blue hover:text-gamer-dark transition text-sm">
                                                 Extender
@@ -136,11 +145,11 @@
                                         <form action="{{ route('auctions.reduce', $product->id) }}" method="POST" class="flex space-x-2">
                                             @csrf
                                             <input type="number" 
-                                                   name="hours" 
-                                                   min="1" 
-                                                   max="24" 
-                                                   value="1" 
-                                                   class="w-20 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-center">
+                                                name="hours" 
+                                                min="1" 
+                                                max="24" 
+                                                value="1" 
+                                                class="w-20 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-white text-center">
                                             <button type="submit" 
                                                     class="flex-1 px-3 py-1 bg-neon-purple/10 text-neon-purple rounded hover:bg-neon-purple hover:text-white transition text-sm">
                                                 Reducir
