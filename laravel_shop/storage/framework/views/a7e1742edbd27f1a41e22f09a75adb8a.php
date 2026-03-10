@@ -46,18 +46,22 @@
                         </a>
                     </div>
 
-                    <!-- MENÚ PRINCIPAL -->
-                    <nav class="hidden md:flex space-x-8 items-center ml-4">
-                        <a href="<?php echo e(route('products.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.index') ? 'text-neon-blue' : ''); ?>">
+                   <!-- MENÚ PRINCIPAL - SIEMPRE VISIBLE -->
+                    <nav class="flex space-x-8 items-center ml-4">
+                        <a href="<?php echo e(route('products.index')); ?>" 
+                        class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('products.*') ? 'text-neon-blue' : ''); ?>">
                             Catálogo
                         </a>
-                        <a href="<?php echo e(route('auctions.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('auctions.*') ? 'text-neon-purple' : ''); ?>">
+                        <a href="<?php echo e(route('auctions.index')); ?>" 
+                        class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('auctions.*') ? 'text-neon-purple' : ''); ?>">
                             Subastas
                         </a>
-                        <a href="<?php echo e(route('raffles.index')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('raffles.*') ? 'text-neon-purple' : ''); ?>">
+                        <a href="<?php echo e(route('raffles.index')); ?>" 
+                        class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('raffles.*') ? 'text-neon-purple' : ''); ?>">
                             Sorteos
                         </a>
-                        <a href="<?php echo e(route('offers')); ?>" class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">
+                        <a href="<?php echo e(route('offers')); ?>" 
+                        class="text-sm font-bold uppercase tracking-wider transition nav-link-hover <?php echo e(request()->routeIs('offers') ? 'text-neon-blue' : ''); ?>">
                             Ofertas
                         </a>
                     </nav>
