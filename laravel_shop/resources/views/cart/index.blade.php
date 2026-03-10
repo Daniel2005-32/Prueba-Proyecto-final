@@ -55,8 +55,9 @@
                                             <td class="px-6 py-4 text-gray-300 price-cell">{{ number_format($item['price'], 2) }}€</td>
                                             <td class="px-6 py-4">
                                                 <div class="flex items-center space-x-2">
-                                                    <button onclick="updateQuantity({{ $id }}, {{ $item['quantity'] - 1 }})" 
-                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition"
+                                                    <button type="button" 
+                                                            onclick="updateQuantityFromInput({{ $id }}, 'decrease')" 
+                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
                                                             {{ $item['quantity'] <= 1 ? 'disabled' : '' }}>
                                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
@@ -70,8 +71,9 @@
                                                            class="w-16 bg-gray-800 border border-gray-700 rounded-lg px-2 py-1 text-white text-center quantity-input"
                                                            onchange="updateQuantity({{ $id }}, this.value)">
                                                     
-                                                    <button onclick="updateQuantity({{ $id }}, {{ $item['quantity'] + 1 }})" 
-                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition"
+                                                    <button type="button" 
+                                                            onclick="updateQuantityFromInput({{ $id }}, 'increase')" 
+                                                            class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-neon-blue/20 transition disabled:opacity-50 disabled:cursor-not-allowed"
                                                             {{ $item['quantity'] >= $maxStock ? 'disabled' : '' }}>
                                                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -154,72 +156,104 @@
 
     <script>
     function updateQuantity(productId, newQuantity) {
-        // Validar que la cantidad sea válida
-        newQuantity = parseInt(newQuantity);
-        if (isNaN(newQuantity) || newQuantity < 1) return;
+        console.log('1. Actualizando producto', productId, 'a cantidad', newQuantity);
         
-        // Obtener el stock máximo
+        // Validar cantidad
+        newQuantity = parseInt(newQuantity);
+        if (isNaN(newQuantity) || newQuantity < 1) {
+            console.log('2. Cantidad inválida');
+            return;
+        }
+        
+        // Obtener elementos
         const row = document.querySelector(`tr[data-id="${productId}"]`);
-        if (!row) return;
+        if (!row) {
+            console.log('2. Fila no encontrada');
+            return;
+        }
         
         const maxStock = parseInt(row.querySelector('.quantity-input').getAttribute('max'));
+        const price = parseFloat(row.dataset.price);
+        
+        console.log('2. Stock máximo:', maxStock, 'Precio:', price);
+        
         if (newQuantity > maxStock) {
             alert('No hay suficiente stock');
             return;
         }
         
-        // Enviar petición AJAX
+        // Enviar petición
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+        
         fetch(`/cart/update/${productId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-CSRF-TOKEN': token
             },
             body: JSON.stringify({ quantity: newQuantity })
         })
         .then(response => response.json())
         .then(data => {
+            console.log('3. Respuesta:', data);
+            
             if (data.success) {
-                // Actualizar la cantidad en el input
+                // Actualizar TODO en la interfaz
+                
+                // 1. Actualizar el input de cantidad
                 row.querySelector('.quantity-input').value = newQuantity;
                 
-                // Actualizar el total del item
-                const price = parseFloat(row.dataset.price);
-                const itemTotal = price * newQuantity;
-                row.querySelector('.item-total').textContent = itemTotal.toFixed(2) + '€';
+                // 2. Actualizar el total del producto
+                const newTotal = (price * newQuantity).toFixed(2);
+                row.querySelector('.item-total').textContent = newTotal + '€';
                 
-                // Actualizar subtotal y total global
+                // 3. Actualizar subtotal y total global
                 document.getElementById('cart-subtotal').textContent = data.subtotal + '€';
                 document.getElementById('cart-total').textContent = data.subtotal + '€';
                 
-                // Habilitar/deshabilitar botones según nueva cantidad
-                updateButtons(productId, newQuantity, maxStock);
+                // 4. ACTUALIZAR BOTONES (FORZAR ESTADO)
+                const buttons = row.querySelectorAll('button');
+                
+                // Botón restar (-)
+                if (newQuantity <= 1) {
+                    buttons[0].setAttribute('disabled', 'disabled');
+                    buttons[0].classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    buttons[0].removeAttribute('disabled');
+                    buttons[0].classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                
+                // Botón sumar (+)
+                if (newQuantity >= maxStock) {
+                    buttons[1].setAttribute('disabled', 'disabled');
+                    buttons[1].classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    buttons[1].removeAttribute('disabled');
+                    buttons[1].classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                
+                console.log('4. Botones actualizados');
             } else {
-                alert(data.error || 'Error al actualizar la cantidad');
+                alert(data.error || 'Error al actualizar');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al actualizar el carrito');
+            alert('Error de conexión');
         });
     }
-    
-    function updateButtons(productId, quantity, maxStock) {
+
+    function updateQuantityFromInput(productId, action) {
         const row = document.querySelector(`tr[data-id="${productId}"]`);
-        const buttons = row.querySelectorAll('button');
+        if (!row) return;
         
-        // Botón de restar (primer botón)
-        if (quantity <= 1) {
-            buttons[0].setAttribute('disabled', 'disabled');
-        } else {
-            buttons[0].removeAttribute('disabled');
-        }
+        const input = row.querySelector('.quantity-input');
+        let currentValue = parseInt(input.value);
         
-        // Botón de sumar (segundo botón)
-        if (quantity >= maxStock) {
-            buttons[1].setAttribute('disabled', 'disabled');
-        } else {
-            buttons[1].removeAttribute('disabled');
+        if (action === 'increase') {
+            updateQuantity(productId, currentValue + 1);
+        } else if (action === 'decrease') {
+            updateQuantity(productId, currentValue - 1);
         }
     }
     </script>
