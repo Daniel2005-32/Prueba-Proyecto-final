@@ -81,7 +81,7 @@
             </template>
         </div>
 
-        <!-- Formulario de mensaje - AHORA CON CONDICIONAL -->
+        <!-- Formulario de mensaje -->
         <div class="border-t border-gray-800 p-3">
             <!-- USUARIOS AUTENTICADOS: pueden escribir -->
             <form x-show="isAuthenticated" @submit.prevent="sendMessage">
@@ -133,6 +133,9 @@
 </div>
 
 <script>
+// Variable global para acceder a la instancia del chat
+let chatInstance = null;
+
 function floatingChat() {
     return {
         isOpen: false,
@@ -144,6 +147,8 @@ function floatingChat() {
         unreadCount: 0,
         
         init() {
+            // Guardar la instancia globalmente
+            chatInstance = this;
             this.loadMessages();
             // Actualizar cada 3 segundos
             setInterval(() => this.loadMessages(), 3000);
@@ -206,4 +211,12 @@ function floatingChat() {
         }
     }
 }
+
+// Función global para refrescar el chat desde cualquier parte
+window.refreshChat = function() {
+    if (chatInstance && typeof chatInstance.loadMessages === 'function') {
+        chatInstance.loadMessages();
+        console.log('Chat refrescado');
+    }
+};
 </script>

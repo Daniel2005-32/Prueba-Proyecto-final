@@ -66,22 +66,29 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('reviews/{review}/approve', [App\Http\Controllers\Admin\ReviewController::class, 'approve'])->name('reviews.approve');
 });
 
-// Ruta para limpiar mensajes - CORREGIDA A POST
+// Ruta para limpiar mensajes - AHORA LIMPIA LA TABLA 'messages'
 Route::post('/admin/clean-messages', function() {
     if (!auth()->check() || !auth()->user()->is_admin) {
-        abort(403, 'Solo administradores');
+        return response()->json(['success' => false, 'error' => 'No autorizado'], 403);
     }
     
     try {
-        // Eliminar TODOS los mensajes del chat
-        \App\Models\ChatMessage::truncate();
+        // Limpiar la tabla 'messages' que es donde están los mensajes
+        $count = DB::table('messages')->count();
+        DB::table('messages')->truncate();
         
-        return redirect()->back()->with('success', '✅ Todos los mensajes del chat han sido eliminados correctamente.');
+        return response()->json([
+            'success' => true,
+            'deleted' => $count,
+            'message' => "✅ $count mensajes eliminados"
+        ]);
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', '❌ Error al limpiar el chat: ' . $e->getMessage());
+        return response()->json([
+            'success' => false, 
+            'error' => '❌ Error: ' . $e->getMessage()
+        ], 500);
     }
 })->name('admin.clean-messages')->middleware('auth');
-
 // ============================================
 // RUTAS DE SUBASTAS
 // ============================================

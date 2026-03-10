@@ -122,14 +122,71 @@
                                         <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">👥 Usuarios</a>
                                         <a href="{{ route('admin.raffles.index') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-blue">🎲 Sorteos</a>
                                         
-                                        <!-- LIMPIAR CHAT - CORREGIDO A POST -->
-                                        <form action="{{ route('admin.clean-messages') }}" method="POST" class="block">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red"
-                                                    onclick="return confirm('¿Eliminar todos los mensajes del chat? Esta acción no se puede deshacer.')">
-                                                🧹 Limpiar chat
-                                            </button>
-                                        </form>
+                                        <!-- LIMPIAR CHAT - VERSIÓN QUE FUNCIONA CON JSON -->
+                                        <div class="border-t border-gray-800 my-1"></div>
+                                        <div class="px-4 py-1 text-xs text-gray-500 uppercase tracking-wider">Utilidades</div>
+
+                                        <button onclick="cleanChat()" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-neon-red transition flex items-center gap-2" id="clean-chat-button">
+                                            <span id="clean-chat-icon">🧹</span>
+                                            <span id="clean-chat-text">Limpiar chat</span>
+                                        </button>
+
+                                        <script>
+                                        function cleanChat() {
+                                            const button = document.getElementById('clean-chat-button');
+                                            const icon = document.getElementById('clean-chat-icon');
+                                            const text = document.getElementById('clean-chat-text');
+                                            
+                                            // Cambiar estado a "limpiando"
+                                            icon.innerHTML = '⏳';
+                                            text.innerHTML = 'Limpiando...';
+                                            button.disabled = true;
+                                            button.classList.add('opacity-50', 'cursor-not-allowed');
+                                            
+                                            // Enviar petición AJAX
+                                            fetch('{{ route("admin.clean-messages") }}', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    icon.innerHTML = '✅';
+                                                    text.innerHTML = '¡Chat limpio!';
+                                                    
+                                                    // Recargar la página después de 1 segundo para ver los cambios
+                                                    setTimeout(() => {
+                                                        location.reload();
+                                                    }, 1000);
+                                                } else {
+                                                    icon.innerHTML = '❌';
+                                                    text.innerHTML = 'Error';
+                                                    
+                                                    setTimeout(() => {
+                                                        icon.innerHTML = '🧹';
+                                                        text.innerHTML = 'Limpiar chat';
+                                                        button.disabled = false;
+                                                        button.classList.remove('opacity-50', 'cursor-not-allowed');
+                                                    }, 2000);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                icon.innerHTML = '❌';
+                                                text.innerHTML = 'Error';
+                                                
+                                                setTimeout(() => {
+                                                    icon.innerHTML = '🧹';
+                                                    text.innerHTML = 'Limpiar chat';
+                                                    button.disabled = false;
+                                                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                                                }, 2000);
+                                            });
+                                        }
+                                        </script>
                                     @endif
                                     
                                     <div class="border-t border-gray-800 my-1"></div>
