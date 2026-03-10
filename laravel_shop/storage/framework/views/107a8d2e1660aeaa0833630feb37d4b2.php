@@ -1,4 +1,13 @@
-<x-store-layout>
+<?php if (isset($component)) { $__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.store-layout','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('store-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <div class="py-12">
         <div class="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-8">
@@ -9,7 +18,7 @@
                     <p class="text-gray-400">Administra los usuarios de la tienda</p>
                 </div>
                 <div class="flex space-x-4">
-                    <a href="{{ route('admin.users.create') }}" class="px-6 py-2 bg-neon-purple text-white font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(157,0,255,0.4)] flex items-center gap-2">
+                    <a href="<?php echo e(route('admin.users.create')); ?>" class="px-6 py-2 bg-neon-purple text-white font-bold rounded-lg hover:scale-105 transition shadow-[0_0_20px_rgba(157,0,255,0.4)] flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                         </svg>
@@ -18,17 +27,19 @@
                 </div>
             </div>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-6">
-                    {{ session('success') }}
-                </div>
-            @endif
+                    <?php echo e(session('success')); ?>
 
-            @if(session('error'))
-                <div class="bg-red-900/50 border border-neon-red text-red-200 px-4 py-3 rounded-lg mb-6">
-                    {{ session('error') }}
                 </div>
-            @endif
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                <div class="bg-red-900/50 border border-neon-red text-red-200 px-4 py-3 rounded-lg mb-6">
+                    <?php echo e(session('error')); ?>
+
+                </div>
+            <?php endif; ?>
 
             <div class="bg-gamer-card rounded-2xl border border-neon-purple/20 overflow-hidden">
                 <table class="w-full">
@@ -44,114 +55,116 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
+                        <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition">
-                                <td class="px-6 py-4 text-gray-300">{{ $user->id }}</td>
+                                <td class="px-6 py-4 text-gray-300"><?php echo e($user->id); ?></td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-3">
                                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon-purple to-neon-blue flex items-center justify-center text-white font-bold text-sm">
-                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                            <?php echo e(strtoupper(substr($user->name, 0, 1))); ?>
+
                                         </div>
-                                        <span class="text-white font-medium">{{ $user->name }}</span>
-                                        @if($user->isSuperAdmin())
+                                        <span class="text-white font-medium"><?php echo e($user->name); ?></span>
+                                        <?php if($user->isSuperAdmin()): ?>
                                             <span class="px-2 py-0.5 bg-neon-red text-white text-xs rounded-full">SUPER ADMIN</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-gray-400">{{ $user->email }}</td>
-                                <td class="px-6 py-4 text-gray-400">{{ $user->created_at->format('d/m/Y') }}</td>
+                                <td class="px-6 py-4 text-gray-400"><?php echo e($user->email); ?></td>
+                                <td class="px-6 py-4 text-gray-400"><?php echo e($user->created_at->format('d/m/Y')); ?></td>
                                 <td class="px-6 py-4">
-                                    @if($user->isSuperAdmin())
+                                    <?php if($user->isSuperAdmin()): ?>
                                         <span class="text-neon-red font-bold">Super Admin</span>
-                                    @elseif($user->is_admin)
+                                    <?php elseif($user->is_admin): ?>
                                         <span class="text-neon-purple font-bold">Administrador</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="text-gray-400">Usuario</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if($user->isBanned())
+                                    <?php if($user->isBanned()): ?>
                                         <span class="px-3 py-1 bg-neon-red/20 text-neon-red rounded-full text-xs">Baneado</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Activo</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-2">
-                                        @if($user->canBeModifiedBy(auth()->user()))
-                                            <a href="{{ route('admin.users.edit', $user) }}" 
+                                        <?php if($user->canBeModifiedBy(auth()->user())): ?>
+                                            <a href="<?php echo e(route('admin.users.edit', $user)); ?>" 
                                                class="px-3 py-1 bg-neon-blue/10 text-neon-blue rounded-lg hover:bg-neon-blue hover:text-gamer-dark transition text-sm">
                                                 Editar
                                             </a>
-                                        @endif
+                                        <?php endif; ?>
                                         
-                                        @if(auth()->user()->isSuperAdmin() && !$user->isSuperAdmin())
-                                            <form action="{{ route('admin.users.toggle-admin', $user) }}" method="POST" class="inline">
-                                                @csrf
-                                                @if($user->is_admin)
+                                        <?php if(auth()->user()->isSuperAdmin() && !$user->isSuperAdmin()): ?>
+                                            <form action="<?php echo e(route('admin.users.toggle-admin', $user)); ?>" method="POST" class="inline">
+                                                <?php echo csrf_field(); ?>
+                                                <?php if($user->is_admin): ?>
                                                     <button type="submit" class="px-3 py-1 bg-yellow-600/10 text-yellow-500 rounded-lg hover:bg-yellow-600 hover:text-white transition text-sm">
                                                         Quitar Admin
                                                     </button>
-                                                @else
+                                                <?php else: ?>
                                                     <button type="submit" class="px-3 py-1 bg-neon-purple/10 text-neon-purple rounded-lg hover:bg-neon-purple hover:text-white transition text-sm">
                                                         Hacer Admin
                                                     </button>
-                                                @endif
+                                                <?php endif; ?>
                                             </form>
-                                        @endif
+                                        <?php endif; ?>
                                         
-                                        @if($user->canBeDeletedBy(auth()->user()) && $user->id !== auth()->id())
-                                            <form action="{{ route('admin.users.destroy', $user) }}" 
+                                        <?php if($user->canBeDeletedBy(auth()->user()) && $user->id !== auth()->id()): ?>
+                                            <form action="<?php echo e(route('admin.users.destroy', $user)); ?>" 
                                                   method="POST" 
                                                   class="inline"
                                                   onsubmit="return confirm('¿Eliminar este usuario?')">
-                                                @csrf
-                                                @method('DELETE')
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="px-3 py-1 bg-neon-red/10 text-neon-red rounded-lg hover:bg-neon-red hover:text-white transition text-sm">
                                                     Eliminar
                                                 </button>
                                             </form>
-                                        @endif
+                                        <?php endif; ?>
 
-                                        @if(!$user->isBanned() && !$user->isSuperAdmin())
-                                            @if(auth()->user()->isSuperAdmin())
-                                                @if($user->id !== auth()->id())
+                                        <?php if(!$user->isBanned() && !$user->isSuperAdmin()): ?>
+                                            <?php if(auth()->user()->isSuperAdmin()): ?>
+                                                <?php if($user->id !== auth()->id()): ?>
                                                     <button type="button" 
-                                                            onclick="openBanModal({{ $user->id }}, '{{ $user->name }}')"
+                                                            onclick="openBanModal(<?php echo e($user->id); ?>, '<?php echo e($user->name); ?>')"
                                                             class="px-3 py-1 bg-gray-600/10 text-gray-400 rounded-lg hover:bg-gray-600 hover:text-white transition text-sm">
                                                         Banear
                                                     </button>
-                                                @endif
-                                            @else
-                                                @if(!$user->is_admin && $user->id !== auth()->id())
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <?php if(!$user->is_admin && $user->id !== auth()->id()): ?>
                                                     <button type="button" 
-                                                            onclick="openBanModal({{ $user->id }}, '{{ $user->name }}')"
+                                                            onclick="openBanModal(<?php echo e($user->id); ?>, '<?php echo e($user->name); ?>')"
                                                             class="px-3 py-1 bg-gray-600/10 text-gray-400 rounded-lg hover:bg-gray-600 hover:text-white transition text-sm">
                                                         Banear
                                                     </button>
-                                                @endif
-                                            @endif
-                                        @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
 
-                                        @if($user->isBanned())
-                                            <form action="{{ route('admin.users.unban', $user) }}" method="POST" class="inline">
-                                                @csrf
+                                        <?php if($user->isBanned()): ?>
+                                            <form action="<?php echo e(route('admin.users.unban', $user)); ?>" method="POST" class="inline">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="px-3 py-1 bg-green-600/10 text-green-400 rounded-lg hover:bg-green-600 hover:text-white transition text-sm"
-                                                        onclick="return confirm('¿Desbanear a {{ $user->name }}?')">
+                                                        onclick="return confirm('¿Desbanear a <?php echo e($user->name); ?>?')">
                                                     Desbanear
                                                 </button>
                                             </form>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
 
             <div class="mt-6">
-                {{ $users->links() }}
+                <?php echo e($users->links()); ?>
+
             </div>
         </div>
     </div>
@@ -169,7 +182,7 @@
             </h2>
 
             <form method="POST" id="banForm">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-gray-300 mb-2 font-bold">Razón del baneo</label>
@@ -257,4 +270,13 @@
             display: block !important;
         }
     </style>
-</x-store-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3)): ?>
+<?php $attributes = $__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3; ?>
+<?php unset($__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3)): ?>
+<?php $component = $__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3; ?>
+<?php unset($__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3); ?>
+<?php endif; ?><?php /**PATH /home/ctk/Documentos/Proyecto_Daniel/Proyecto-final-main/laravel_shop/resources/views/admin/users/index.blade.php ENDPATH**/ ?>

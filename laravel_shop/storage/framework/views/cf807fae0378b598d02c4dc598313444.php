@@ -1,24 +1,35 @@
-<x-store-layout>
+<?php if (isset($component)) { $__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.store-layout','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('store-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <div class="py-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8">
                 <h1 class="text-4xl font-black text-white mb-2">
                     <span class="text-neon-purple">👤 Mi Perfil</span>
                 </h1>
-                <p class="text-gray-400">Bienvenido de nuevo, {{ Auth::user()->name }}</p>
+                <p class="text-gray-400">Bienvenido de nuevo, <?php echo e(Auth::user()->name); ?></p>
             </div>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-6">
-                    {{ session('success') }}
-                </div>
-            @endif
+                    <?php echo e(session('success')); ?>
 
-            @if(session('error'))
-                <div class="bg-red-900/50 border border-neon-red text-red-200 px-4 py-3 rounded-lg mb-6">
-                    {{ session('error') }}
                 </div>
-            @endif
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                <div class="bg-red-900/50 border border-neon-red text-red-200 px-4 py-3 rounded-lg mb-6">
+                    <?php echo e(session('error')); ?>
+
+                </div>
+            <?php endif; ?>
 
             <!-- Información personal - Fondo azul oscuro -->
             <div class="bg-gradient-to-br from-blue-900/30 to-blue-950/50 rounded-2xl border border-neon-blue/30 p-8 mb-8 backdrop-blur-sm">
@@ -32,33 +43,33 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-gray-400 text-sm mb-1">Nombre</label>
-                        <p class="text-white text-lg font-bold">{{ Auth::user()->name }}</p>
+                        <p class="text-white text-lg font-bold"><?php echo e(Auth::user()->name); ?></p>
                     </div>
                     
                     <div>
                         <label class="block text-gray-400 text-sm mb-1">Email</label>
-                        <p class="text-white text-lg">{{ Auth::user()->email }}</p>
+                        <p class="text-white text-lg"><?php echo e(Auth::user()->email); ?></p>
                     </div>
                     
                     <div>
                         <label class="block text-gray-400 text-sm mb-1">Miembro desde</label>
-                        <p class="text-white">{{ Auth::user()->created_at->format('d/m/Y') }}</p>
+                        <p class="text-white"><?php echo e(Auth::user()->created_at->format('d/m/Y')); ?></p>
                     </div>
                     
                     <div>
                         <label class="block text-gray-400 text-sm mb-1">Rol</label>
-                        @if(Auth::user()->isSuperAdmin())
+                        <?php if(Auth::user()->isSuperAdmin()): ?>
                             <p class="text-neon-red font-bold">Super Administrador</p>
-                        @elseif(Auth::user()->is_admin)
+                        <?php elseif(Auth::user()->is_admin): ?>
                             <p class="text-neon-blue font-bold">Administrador</p>
-                        @else
+                        <?php else: ?>
                             <p class="text-gray-300">Usuario</p>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
                 
                 <div class="mt-6">
-                    <a href="{{ route('profile.edit') }}" class="px-6 py-2 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition inline-flex items-center gap-2 shadow-[0_0_15px_rgba(0,210,255,0.3)]">
+                    <a href="<?php echo e(route('profile.edit')); ?>" class="px-6 py-2 bg-neon-blue text-gamer-dark font-bold rounded-lg hover:scale-105 transition inline-flex items-center gap-2 shadow-[0_0_15px_rgba(0,210,255,0.3)]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                         </svg>
@@ -76,45 +87,46 @@
                     Subastas ganadas
                 </h2>
                 
-                @php
+                <?php
                     $wonAuctions = Auth::user()->wonAuctions()
                         ->where('auction_claimed', false)
                         ->orderBy('auction_end_time', 'desc')
                         ->get();
-                @endphp
+                ?>
                 
-                @if($wonAuctions->count() > 0)
+                <?php if($wonAuctions->count() > 0): ?>
                     <div class="space-y-4">
-                        @foreach($wonAuctions as $auction)
+                        <?php $__currentLoopData = $wonAuctions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $auction): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="bg-gray-800/50 rounded-lg p-4 flex justify-between items-center border border-gray-700 hover:border-neon-purple/50 transition">
                                 <div class="flex items-center space-x-4">
-                                    <img src="{{ $auction->image }}" alt="{{ $auction->name }}" class="w-16 h-16 object-cover rounded-lg">
+                                    <img src="<?php echo e($auction->image); ?>" alt="<?php echo e($auction->name); ?>" class="w-16 h-16 object-cover rounded-lg">
                                     <div>
-                                        <h3 class="text-white font-bold">{{ $auction->name }}</h3>
+                                        <h3 class="text-white font-bold"><?php echo e($auction->name); ?></h3>
                                         <p class="text-gray-400 text-sm">
-                                            Ganada el {{ $auction->auction_end_time ? $auction->auction_end_time->format('d/m/Y') : 'Fecha no disponible' }}
+                                            Ganada el <?php echo e($auction->auction_end_time ? $auction->auction_end_time->format('d/m/Y') : 'Fecha no disponible'); ?>
+
                                         </p>
-                                        <p class="text-neon-purple font-bold">{{ number_format($auction->auction_final_price ?? $auction->price, 2) }}€</p>
+                                        <p class="text-neon-purple font-bold"><?php echo e(number_format($auction->auction_final_price ?? $auction->price, 2)); ?>€</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('products.show', $auction->slug) }}" 
+                                <a href="<?php echo e(route('products.show', $auction->slug)); ?>" 
                                    class="px-4 py-2 bg-neon-purple text-white rounded-lg hover:bg-neon-purple/80 transition text-sm shadow-[0_0_15px_rgba(157,0,255,0.3)]">
                                     Ver producto
                                 </a>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-8 bg-gray-800/30 rounded-lg">
                         <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <p class="text-gray-400">No has ganado ninguna subasta aún</p>
-                        <a href="{{ route('auctions.index') }}" class="inline-block mt-3 text-neon-purple hover:underline">
+                        <a href="<?php echo e(route('auctions.index')); ?>" class="inline-block mt-3 text-neon-purple hover:underline">
                             Ver subastas activas
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- Sorteos ganados - Fondo rojo oscuro -->
@@ -126,57 +138,57 @@
                     Sorteos ganados
                 </h2>
                 
-                @php
+                <?php
                     $wonRaffles = Auth::user()->wonRaffles()
                         ->orderBy('draw_date', 'desc')
                         ->get();
-                @endphp
+                ?>
                 
-                @if($wonRaffles->count() > 0)
+                <?php if($wonRaffles->count() > 0): ?>
                     <div class="space-y-4">
-                        @foreach($wonRaffles as $raffle)
-                            @php
+                        <?php $__currentLoopData = $wonRaffles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $raffle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $product = $raffle->getProduct();
-                            @endphp
+                            ?>
                             <div class="bg-gray-800/50 rounded-lg p-4 flex justify-between items-center border border-gray-700 hover:border-neon-red/50 transition">
                                 <div class="flex items-center space-x-4">
-                                    @if($product)
-                                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-16 h-16 object-cover rounded-lg">
-                                    @else
+                                    <?php if($product): ?>
+                                        <img src="<?php echo e($product->image); ?>" alt="<?php echo e($product->name); ?>" class="w-16 h-16 object-cover rounded-lg">
+                                    <?php else: ?>
                                         <div class="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
                                             <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                             </svg>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                     <div>
-                                        <h3 class="text-white font-bold">{{ $raffle->title }}</h3>
-                                        <p class="text-gray-400 text-sm">Sorteado el {{ $raffle->draw_date->format('d/m/Y') }}</p>
-                                        @if($product)
-                                            <p class="text-neon-red font-bold">{{ $product->name }}</p>
-                                        @endif
+                                        <h3 class="text-white font-bold"><?php echo e($raffle->title); ?></h3>
+                                        <p class="text-gray-400 text-sm">Sorteado el <?php echo e($raffle->draw_date->format('d/m/Y')); ?></p>
+                                        <?php if($product): ?>
+                                            <p class="text-neon-red font-bold"><?php echo e($product->name); ?></p>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                                @if($product)
-                                    <a href="{{ route('products.show', $product->slug) }}" 
+                                <?php if($product): ?>
+                                    <a href="<?php echo e(route('products.show', $product->slug)); ?>" 
                                        class="px-4 py-2 bg-neon-red text-white rounded-lg hover:bg-neon-red/80 transition text-sm shadow-[0_0_15px_rgba(255,0,85,0.3)]">
                                         Ver premio
                                     </a>
-                                @endif
+                                <?php endif; ?>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-8 bg-gray-800/30 rounded-lg">
                         <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 11.5v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 9v6m0 0l-3-3m3 3l3-3M3 3h18v6H3V3z"></path>
                         </svg>
                         <p class="text-gray-400">No has ganado ningún sorteo aún</p>
-                        <a href="{{ route('raffles.index') }}" class="inline-block mt-3 text-neon-red hover:underline">
+                        <a href="<?php echo e(route('raffles.index')); ?>" class="inline-block mt-3 text-neon-red hover:underline">
                             Ver sorteos activos
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- Historial de pedidos - Fondo verde oscuro -->
@@ -188,87 +200,87 @@
                         </svg>
                         📦 Mis pedidos
                     </h2>
-                    @php
+                    <?php
                         $ordersCount = Auth::user()->orders()->count();
-                    @endphp
-                    <span class="text-gray-400 text-sm">Total: {{ $ordersCount }} pedidos</span>
+                    ?>
+                    <span class="text-gray-400 text-sm">Total: <?php echo e($ordersCount); ?> pedidos</span>
                 </div>
                 
-                @php
+                <?php
                     $orders = Auth::user()->orders()
                         ->with('items.product')
                         ->orderBy('created_at', 'desc')
                         ->get();
-                @endphp
+                ?>
                 
-                @if($orders->count() > 0)
+                <?php if($orders->count() > 0): ?>
                     <div class="space-y-4">
-                        @foreach($orders as $order)
+                        <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-500/50 transition">
                                 <div class="flex flex-wrap justify-between items-start gap-4">
                                     <!-- Información del pedido -->
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-2">
-                                            <span class="text-green-500 font-bold">Pedido #{{ $order->id }}</span>
-                                            <span class="text-gray-400 text-sm">{{ $order->created_at->format('d/m/Y H:i') }}</span>
-                                            @if($order->status == 'pending')
+                                            <span class="text-green-500 font-bold">Pedido #<?php echo e($order->id); ?></span>
+                                            <span class="text-gray-400 text-sm"><?php echo e($order->created_at->format('d/m/Y H:i')); ?></span>
+                                            <?php if($order->status == 'pending'): ?>
                                                 <span class="px-2 py-0.5 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">Pendiente</span>
-                                            @elseif($order->status == 'completed')
+                                            <?php elseif($order->status == 'completed'): ?>
                                                 <span class="px-2 py-0.5 bg-green-600/20 text-green-400 rounded-full text-xs">Completado</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="px-2 py-0.5 bg-red-600/20 text-red-400 rounded-full text-xs">Cancelado</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                         
                                         <!-- Productos del pedido -->
                                         <div class="space-y-2 mt-3">
-                                            @foreach($order->items as $item)
+                                            <?php $__currentLoopData = $order->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <div class="flex items-center gap-3 text-sm">
-                                                    @if($item->product)
-                                                        <img src="{{ $item->product->image }}" alt="{{ $item->product->name }}" class="w-10 h-10 object-cover rounded">
+                                                    <?php if($item->product): ?>
+                                                        <img src="<?php echo e($item->product->image); ?>" alt="<?php echo e($item->product->name); ?>" class="w-10 h-10 object-cover rounded">
                                                         <div class="flex-1">
-                                                            <span class="text-white">{{ $item->product->name }}</span>
-                                                            <span class="text-gray-400 text-xs block">Cantidad: {{ $item->quantity }}</span>
+                                                            <span class="text-white"><?php echo e($item->product->name); ?></span>
+                                                            <span class="text-gray-400 text-xs block">Cantidad: <?php echo e($item->quantity); ?></span>
                                                         </div>
-                                                    @else
+                                                    <?php else: ?>
                                                         <div class="w-10 h-10 bg-gray-700 rounded flex items-center justify-center">
                                                             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                                             </svg>
                                                         </div>
-                                                    @endif
-                                                    <span class="text-green-500 font-bold">{{ number_format($item->price * $item->quantity, 2) }}€</span>
+                                                    <?php endif; ?>
+                                                    <span class="text-green-500 font-bold"><?php echo e(number_format($item->price * $item->quantity, 2)); ?>€</span>
                                                 </div>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                         
                                         <!-- Total del pedido -->
                                         <div class="mt-3 pt-3 border-t border-gray-700 flex justify-between items-center">
                                             <span class="text-gray-400">Total</span>
-                                            <span class="text-white font-bold text-lg">{{ number_format($order->total, 2) }}€</span>
+                                            <span class="text-white font-bold text-lg"><?php echo e(number_format($order->total, 2)); ?>€</span>
                                         </div>
                                     </div>
                                     
                                     <!-- Botón ver detalles -->
-                                    <a href="{{ route('orders.show', $order) }}" 
+                                    <a href="<?php echo e(route('orders.show', $order)); ?>" 
                                        class="px-4 py-2 bg-green-600 text-white text-sm font-bold rounded-lg hover:bg-green-700 transition whitespace-nowrap shadow-[0_0_15px_rgba(0,255,0,0.2)]">
                                         Ver detalles →
                                     </a>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-8 bg-gray-800/30 rounded-lg">
                         <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
                         <p class="text-gray-400">No has realizado ningún pedido aún</p>
-                        <a href="{{ route('products.index') }}" class="inline-block mt-3 text-green-500 hover:underline">
+                        <a href="<?php echo e(route('products.index')); ?>" class="inline-block mt-3 text-green-500 hover:underline">
                             Comprar ahora
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- Direcciones - Fondo neutro (gris) -->
@@ -281,55 +293,64 @@
                         </svg>
                         Direcciones
                     </h2>
-                    <a href="{{ route('addresses.create') }}" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition text-sm">
+                    <a href="<?php echo e(route('addresses.create')); ?>" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition text-sm">
                         + Nueva dirección
                     </a>
                 </div>
                 
-                @php
+                <?php
                     $addresses = App\Models\Address::where('user_id', Auth::id())->get();
-                @endphp
+                ?>
                 
-                @if($addresses->count() > 0)
+                <?php if($addresses->count() > 0): ?>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach($addresses as $address)
-                            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700 {{ $address->is_default ? 'border-gray-500' : '' }}">
+                        <?php $__currentLoopData = $addresses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $address): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700 <?php echo e($address->is_default ? 'border-gray-500' : ''); ?>">
                                 <div class="flex justify-between items-start mb-2">
-                                    <h3 class="text-white font-bold">{{ $address->name }}</h3>
-                                    @if($address->is_default)
+                                    <h3 class="text-white font-bold"><?php echo e($address->name); ?></h3>
+                                    <?php if($address->is_default): ?>
                                         <span class="text-gray-400 text-xs font-bold">PREDETERMINADA</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
-                                <p class="text-gray-400 text-sm">{{ $address->street }}, {{ $address->number }}</p>
-                                @if($address->complement)
-                                    <p class="text-gray-400 text-sm">{{ $address->complement }}</p>
-                                @endif
-                                <p class="text-gray-400 text-sm">{{ $address->city }}, {{ $address->state }}</p>
-                                <p class="text-gray-400 text-sm">CP: {{ $address->zipcode }}</p>
-                                <p class="text-gray-400 text-sm">Tel: {{ $address->phone }}</p>
+                                <p class="text-gray-400 text-sm"><?php echo e($address->street); ?>, <?php echo e($address->number); ?></p>
+                                <?php if($address->complement): ?>
+                                    <p class="text-gray-400 text-sm"><?php echo e($address->complement); ?></p>
+                                <?php endif; ?>
+                                <p class="text-gray-400 text-sm"><?php echo e($address->city); ?>, <?php echo e($address->state); ?></p>
+                                <p class="text-gray-400 text-sm">CP: <?php echo e($address->zipcode); ?></p>
+                                <p class="text-gray-400 text-sm">Tel: <?php echo e($address->phone); ?></p>
                                 
                                 <div class="mt-3 flex space-x-2">
-                                    <a href="{{ route('addresses.edit', $address) }}" class="text-gray-400 hover:text-white text-sm">
+                                    <a href="<?php echo e(route('addresses.edit', $address)); ?>" class="text-gray-400 hover:text-white text-sm">
                                         Editar
                                     </a>
-                                    @if(!$address->is_default)
-                                        <form action="{{ route('addresses.set-default', $address) }}" method="POST" class="inline">
-                                            @csrf
+                                    <?php if(!$address->is_default): ?>
+                                        <form action="<?php echo e(route('addresses.set-default', $address)); ?>" method="POST" class="inline">
+                                            <?php echo csrf_field(); ?>
                                             <button type="submit" class="text-gray-500 hover:text-gray-300 text-sm">
                                                 Establecer como predeterminada
                                             </button>
                                         </form>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-8 bg-gray-800/30 rounded-lg">
                         <p class="text-gray-400">No tienes direcciones guardadas</p>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
-</x-store-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3)): ?>
+<?php $attributes = $__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3; ?>
+<?php unset($__attributesOriginalfa92fd5562a0c82e62f2e625d459a2d3); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3)): ?>
+<?php $component = $__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3; ?>
+<?php unset($__componentOriginalfa92fd5562a0c82e62f2e625d459a2d3); ?>
+<?php endif; ?><?php /**PATH /home/ctk/Documentos/Proyecto_Daniel/Proyecto-final-main/laravel_shop/resources/views/profile/index.blade.php ENDPATH**/ ?>

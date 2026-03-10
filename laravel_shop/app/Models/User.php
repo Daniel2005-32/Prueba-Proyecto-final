@@ -142,4 +142,28 @@ class User extends Authenticatable
         return true;
     }
 
+    /**
+     * Relación con pedidos
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Relación con subastas ganadas
+     */
+    public function wonAuctions()
+    {
+        return $this->hasMany(Product::class, 'auction_winner_id');
+    }
+
+    /**
+     * Relación con sorteos ganados
+     */
+    public function wonRaffles()
+    {
+        return $this->hasMany(Raffle::class, 'winner_id');
+    }
+
 }
